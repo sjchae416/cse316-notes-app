@@ -35,7 +35,7 @@ const App = () => {
     const date = new Date();
     const newNote = {
       id: uuidv4(),
-      text: "",
+      text: "New Note",
       date: date.toLocaleDateString()
     }
     const newNotes = [...notes, newNote];

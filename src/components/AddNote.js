@@ -3,16 +3,15 @@ import { useState } from "react";
 const AddNote = (props) => {
   const [noteText, setNoteText] = useState('');
 
-  // const handleAddNote = () => {
-  //   // if (noteText.trim().length > 0) {
-  //   //   props.addNote(noteText);
-  //   //   setNoteText('');
-  //   // }
-  //   // props.addNote(noteText);
-  // }
+  const handleAddNote = () => {
+    // if (noteText.trim().length > 0) {
+    //   props.addNote(noteText);
+    //   setNoteText('');
+    // }
+  }
 
   return (
-    <span onClick={props.handleAddNote(noteText)} className="material-icons" id="icon-note-add">note_add</span>
+    <span onClick={props.handleAddNote} className="material-icons" id="icon-note-add">note_add</span>
   )
 }
 

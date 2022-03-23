@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 const EditorWindowContent = (props) => {
   const [noteText, setNoteText] = useState('');
 
@@ -7,7 +8,7 @@ const EditorWindowContent = (props) => {
     // console.log(noteText);
     console.log(props.notes[0].text);
     // props.notes[0].text = noteText;
-    props.updateNote(props.notes, noteText,0);
+    props.updateNote(props.notes, noteText, 0);
   }
 
   return (

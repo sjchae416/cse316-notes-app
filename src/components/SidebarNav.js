@@ -6,7 +6,7 @@ const SidebarNav = (props) => {
     <div className="sidebar-nav nav">
       <ProfilePhotoButton />
       <span className="sidebar-title">My Notes</span>
-      <AddNote notes={props.notes} handleAddNote={props.hanleAddNote} />
+      <AddNote notes={props.notes} handleAddNote={props.handleAddNote} />
     </div>
   )
 }
