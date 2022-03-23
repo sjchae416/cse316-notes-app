@@ -3,15 +3,16 @@ import { useState } from "react";
 const AddNote = (props) => {
   const [noteText, setNoteText] = useState('');
 
-  const handleSaveClick = () => {
-    if (noteText.trim().length > 0) {
-      props.handleAddNote(noteText);
-      setNoteText('');
-    }
-  }
+  // const handleAddNote = () => {
+  //   // if (noteText.trim().length > 0) {
+  //   //   props.addNote(noteText);
+  //   //   setNoteText('');
+  //   // }
+  //   // props.addNote(noteText);
+  // }
 
   return (
-    <span onClick={handleSaveClick} className="material-icons" id="icon-note-add">note_add</span>
+    <span onClick={props.handleAddNote(noteText)} className="material-icons" id="icon-note-add">note_add</span>
   )
 }
 

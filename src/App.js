@@ -1,11 +1,10 @@
-import { useState } from 'react';
-// import { nanoid } from 'nanoid';
+import { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-// import Icon from '@mui/material/Icon';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
+
 
 const App = () => {
   const [notes, setNotes] = useState([{
@@ -20,11 +19,23 @@ const App = () => {
   },
   ]);
 
-  const addNote = (text) => {
+  useEffect(() => {
+    console.log("APP USEEFFECT")
+  }, [notes]);
+
+  const updateNote = (notes, text, i) => {
+    console.log(notes[i].text);
+    notes[i].text = text;
+
+    let newNotes = notes.slice();
+    setNotes(newNotes);
+  }
+
+  const addNote = () => {
     const date = new Date();
     const newNote = {
       id: uuidv4(),
-      text: text,
+      text: "",
       date: date.toLocaleDateString()
     }
     const newNotes = [...notes, newNote];
@@ -44,7 +55,7 @@ const App = () => {
       </div>
       <div className='editor-window'>
         <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} />
-        <EditorWindowContent notes={notes} handleAddNote={addNote} />
+        <EditorWindowContent notes={notes} updateNote={updateNote} />
       </div>
     </div>
   );

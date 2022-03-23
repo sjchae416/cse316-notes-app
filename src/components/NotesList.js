@@ -1,6 +1,15 @@
 import Note from './Note';
+import { useState, useEffect } from 'react';
 
-const NotesList = ({ notes }) => {
+const NotesList = (props) => {
+
+  const [notes, setNotes] = useState(props.notes);
+  // useEffect(() => {
+  //   setNotes(props.notes);
+  //   console.log(props.notes);
+  // }, [props.notes]);
+
+
   return (
     <div className="notes-list" >
       {notes.map((note) => (
