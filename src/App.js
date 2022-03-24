@@ -50,9 +50,6 @@ const App = () => {
     console.log('selectedNoteId=         ' + selectedNoteId);
   }
 
-  const selectNote = () => {
-  }
-
   const updateNote = (notes, text, i) => {
     console.log(notes[i].text);
     notes[i].text = text;
@@ -70,7 +67,7 @@ const App = () => {
     <div className="container">
       <div className='sidebar'>
         <SidebarNav notes={notes} handleAddNote={addNote} />
-        <SidebarContent notes={notes} handleAddNote={addNote} handleSelectNote={selectNote} handleGetId={getId} />
+        <SidebarContent notes={notes} handleAddNote={addNote} handleGetId={getId} />
       </div>
       <div className='editor-window'>
         <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} selectedNoteId={selectedNoteId} />

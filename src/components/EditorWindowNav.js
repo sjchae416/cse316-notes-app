@@ -7,7 +7,7 @@ const EditorWindowNav = (props) => {
       <span className="material-icons">notification_add</span>
       <span className="material-icons">person_add_alt</span>
       {/* {notes.map((note) => ( */}
-      <DeleteNote notes={props.note} selectedNoteId={props.selectedNoteId} handleDeleteNote={props.handleDeleteNote} />
+      <DeleteNote notes={props.note} handleDeleteNote={props.handleDeleteNote} selectedNoteId={props.selectedNoteId} />
       {/* ))} */}
     </div>
   )

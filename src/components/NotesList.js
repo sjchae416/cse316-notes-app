@@ -10,7 +10,7 @@ const NotesList = (props) => {
 
   return (
     <div className="notes-list" >
-      {props.notes.map((note) => (
+      {props.notes.slice(0).reverse().map((note) => (
         <Note id={note.id} text={note.text} date={note.date} handleSelectNote={props.handleSelectNote} handleGetId={props.handleGetId} />
       ))}
     </div >
