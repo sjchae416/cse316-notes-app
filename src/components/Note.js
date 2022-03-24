@@ -1,8 +1,13 @@
-const Note = (props) => {
+const Note = ({ id, text, date, stateSetSelectedNoteId }) => {
+
   return (
-    <div onClick={() => props.handleGetId(props.id)} className="note">
-      <div className="preview">{props.text}</div>
-      <div className="date">{props.date}</div>
+    //  <div onClick={() => handleGetId(id)} className="note">
+    <div onClick={() => {
+      console.log(id);
+      return stateSetSelectedNoteId(id);
+    }} className="note">
+      <div className="preview">{text}</div>
+      <div className="date">{date}</div>
     </div>
   );
 };
