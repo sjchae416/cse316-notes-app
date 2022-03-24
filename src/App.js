@@ -20,16 +20,12 @@ const App = () => {
   ]);
 
   useEffect(() => {
-    console.log("APP USEEFFECT")
+    console.log("APP USE_EFFECT")
   }, [notes]);
 
-  const updateNote = (notes, text, i) => {
-    console.log(notes[i].text);
-    notes[i].text = text;
-
-    let newNotes = notes.slice();
-    setNotes(newNotes);
-  }
+  useEffect(() => {
+    console.log("APP USE_EFFECT")
+  }, [selectedNoteId]);
 
   const addNote = () => {
     const date = new Date();
@@ -42,6 +38,29 @@ const App = () => {
     setNotes(newNotes);
   }
 
+  var selectedNoteId = '';
+
+  const getId = (onClickId) => {
+    // console.log("e=         " + e);
+    // console.log("e.target=         " + e.target);
+    // console.log("e.target.id=         " + e.target.id);
+    // console.log("e.currentTarget.id=         " + e.currentTarget.id);
+    selectedNoteId = onClickId;
+    console.log('onClickId=         ' + onClickId);
+    console.log('selectedNoteId=         ' + selectedNoteId);
+  }
+
+  const selectNote = () => {
+  }
+
+  const updateNote = (notes, text, i) => {
+    console.log(notes[i].text);
+    notes[i].text = text;
+
+    let newNotes = notes.slice();
+    setNotes(newNotes);
+  }
+
   const deleteNote = (id) => {
     const newNotes = notes.filter((note) => note.id != id);
     setNotes(newNotes);
@@ -51,10 +70,10 @@ const App = () => {
     <div className="container">
       <div className='sidebar'>
         <SidebarNav notes={notes} handleAddNote={addNote} />
-        <SidebarContent notes={notes} handleAddNote={addNote} />
+        <SidebarContent notes={notes} handleAddNote={addNote} handleSelectNote={selectNote} handleGetId={getId} />
       </div>
       <div className='editor-window'>
-        <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} />
+        <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} selectedNoteId={selectedNoteId} />
         <EditorWindowContent notes={notes} updateNote={updateNote} />
       </div>
     </div>

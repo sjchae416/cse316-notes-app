@@ -1,6 +1,6 @@
-const DeleteNote = ({ id, handleDeleteNote }) => {
+const DeleteNote = (props) => {
   return (
-    <span onClick={() => handleDeleteNote(id)} className="material-icons" id="icon-note-delete">delete_outline</span>
+    <span onClick={() => props.handleDeleteNote(props.selectedNoteId)} className="material-icons" id="icon-note-delete">delete_outline</span>
   )
 }
 

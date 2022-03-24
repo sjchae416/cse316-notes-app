@@ -11,7 +11,7 @@ const NotesList = (props) => {
   return (
     <div className="notes-list" >
       {props.notes.map((note) => (
-        <Note id={note.id} text={note.text} date={note.date} />
+        <Note id={note.id} text={note.text} date={note.date} handleSelectNote={props.handleSelectNote} handleGetId={props.handleGetId} />
       ))}
     </div >
   );

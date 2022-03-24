@@ -1,4 +1,4 @@
-const ProfilePhotoButton = () => {
+const DisplayProfilePage = () => {
   return (
     <button className="button-profile" id="button-profile" type="button">
       <img className="profile-picture" src="../../public/keyboard.jpg" />
@@ -6,4 +6,4 @@ const ProfilePhotoButton = () => {
   )
 }
 
-export default ProfilePhotoButton;
+export default DisplayProfilePage;

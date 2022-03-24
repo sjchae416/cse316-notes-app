@@ -7,7 +7,7 @@ const SidebarContent = (props) => {
         <span className="material-icons">search</span>
         <input className="input-search" type="text" placeholder="Search all notes" />
       </div>
-      <NotesList notes={props.notes} />
+      <NotesList notes={props.notes} handleSelectNote={props.handleSelectNote} handleGetId={props.handleGetId} />
     </div>
   );
 };

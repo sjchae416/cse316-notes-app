@@ -1,8 +1,8 @@
-const Note = ({ id, text, date }) => {
+const Note = (props) => {
   return (
-    <div className="note">
-      <div className="preview">{text}</div>
-      <div className="date">{date}</div>
+    <div onClick={() => props.handleGetId(props.id)} className="note">
+      <div className="preview">{props.text}</div>
+      <div className="date">{props.date}</div>
     </div>
   );
 };
