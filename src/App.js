@@ -9,25 +9,29 @@ import TagArea from './components/TagArea';
 const App = () => {
   const [notes, setNotes] = useState(() => {
     const localStorageValue = localStorage.getItem('notes');
-    return localStorageValue ? JSON.parse(localStorageValue) : [{
-      id: uuidv4(),
-      text: "This is a note1 with a long line of text.",
-      date: "3/21/2022, 8:52:17 PM",
-      tags: []
-    },
-    {
-      id: uuidv4(),
-      text: "This is a note2 with a long line of text.",
-      date: "3/21/2022, 8:52:17 PM",
-      tags: []
-    }]
+    return localStorageValue
+      ? JSON.parse(localStorageValue)
+      : [
+          {
+            id: uuidv4(),
+            text: 'This is a note1 with a long line of text.',
+            date: '3/21/2022, 8:52:17 PM',
+            tags: [],
+          },
+          {
+            id: uuidv4(),
+            text: 'This is a note2 with a long line of text.',
+            date: '3/21/2022, 8:52:17 PM',
+            tags: [],
+          },
+        ];
   });
 
   const [selectedNoteId, setSelectedNoteId] = useState('');
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteDisabled, setIsNoteDisabled] = useState(false);
-  const [isInit, setIsInit] = useState(true)
+  const [isInit, setIsInit] = useState(true);
 
   useEffect(() => {
     if (notes.length === 0 || isInit) {
@@ -41,7 +45,9 @@ const App = () => {
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
-  useEffect(() => { setIsInit(false) }, []);
+  useEffect(() => {
+    setIsInit(false);
+  }, []);
 
   useEffect(() => {
     console.log('USEEFFECT          ' + selectedNoteId);
@@ -49,7 +55,7 @@ const App = () => {
       for (let i = 0; i < notes.length; i++) {
         console.log(notes[i].id);
         if (notes[i].id === selectedNoteId) {
-          console.log(`i wousld be ${i}`)
+          console.log(`i wousld be ${i}`);
           setSelectedNoteIndex(i);
           break;
         }
@@ -60,21 +66,21 @@ const App = () => {
   }, [selectedNoteId]);
 
   useEffect(() => {
-    console.log("---------------this is selected Note--------");
-    console.log(notes[selectedNoteIndex])
-  }, [selectedNoteIndex])
+    console.log('---------------this is selected Note--------');
+    console.log(notes[selectedNoteIndex]);
+  }, [selectedNoteIndex]);
 
   const addNote = () => {
     setIsEditing(false);
     const date = new Date();
     const newNote = {
       id: uuidv4(),
-      text: "",
-      date: date.toLocaleString()
-    }
+      text: '',
+      date: date.toLocaleString(),
+    };
     const newNotes = [...notes, newNote];
     setNotes(newNotes);
-  }
+  };
 
   // const getId = (onClickId) => {
   //   // console.log("e=         " + e);
@@ -87,28 +93,32 @@ const App = () => {
   // }
 
   const updateNote = (notes, text) => {
-    console.log('now text-----------------')
+    console.log('now text-----------------');
     console.log(notes[selectedNoteIndex].text);
     const date = new Date();
     const editedNotes = [...notes];
-    const editedNote = { ...notes[selectedNoteIndex], text: text, date: date.toLocaleString() };
+    const editedNote = {
+      ...notes[selectedNoteIndex],
+      text: text,
+      date: date.toLocaleString(),
+    };
     editedNotes[selectedNoteIndex] = editedNote;
 
     setNotes(editedNotes);
-  }
+  };
 
   const deleteNote = (id) => {
     setIsEditing(false);
     const newNotes = notes.filter((note) => note.id !== id);
     setNotes(newNotes);
-  }
+  };
 
-  const handleTagDelete = i => {
+  const handleTagDelete = (i) => {
     setIsEditing(true);
     const modifiedTags = [...notes[selectedNoteIndex].tags];
     modifiedTags.splice(i, 1);
     const untaggedNotes = [...notes];
-    const untaggedNote = { ...notes[selectedNoteIndex], tags: modifiedTags }
+    const untaggedNote = { ...notes[selectedNoteIndex], tags: modifiedTags };
     untaggedNotes[selectedNoteIndex] = untaggedNote;
     setNotes(untaggedNotes);
   };
@@ -117,9 +127,9 @@ const App = () => {
     setIsEditing(true);
     const newTags = [...notes[selectedNoteIndex].tags, newTag];
     const taggedNotes = [...notes];
-    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags }
+    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags };
     taggedNotes[selectedNoteIndex] = taggedNote;
-    setNotes(taggedNotes)
+    setNotes(taggedNotes);
   };
 
   const handleTagDrag = (tag, currPos, newPos) => {
@@ -130,30 +140,50 @@ const App = () => {
     newTags.splice(newPos, 0, tag);
 
     const taggedNotes = [...notes];
-    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags }
+    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags };
     taggedNotes[selectedNoteIndex] = taggedNote;
 
-    setNotes(taggedNotes)
+    setNotes(taggedNotes);
   };
 
-  const handleTagClick = index => {
+  const handleTagClick = (index) => {
     console.log('The tag at index ' + index + ' was clicked');
   };
 
   return (
     <div className="container">
-      <div className='sidebar'>
+      <div className="sidebar">
         <SidebarNav notes={notes} handleAddNote={addNote} />
         {/* <SidebarContent notes={notes} handleAddNote={addNote} handleGetId={getId} stateSetSelectedNoteId={setSelectedNoteId} /> */}
-        <SidebarContent notes={notes} handleAddNote={addNote} stateSetSelectedNoteId={setSelectedNoteId} />
+        <SidebarContent
+          notes={notes}
+          handleAddNote={addNote}
+          stateSetSelectedNoteId={setSelectedNoteId}
+        />
       </div>
-      <div className='editor-window'>
-        <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} selectedNoteId={selectedNoteId} />
-        <EditorWindowContent notes={notes} updateNote={updateNote} selectedNoteIndex={selectedNoteIndex} setIsEditing={setIsEditing} disabled={isNoteDisabled} />
-        <TagArea tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []} handleDelete={handleTagDelete} handleAddition={handleTagAdd} handleDrag={handleTagDrag} handleTagClick={handleTagClick} />
+      <div className="editor-window">
+        <EditorWindowNav
+          notes={notes}
+          handleDeleteNote={deleteNote}
+          selectedNoteId={selectedNoteId}
+        />
+        <EditorWindowContent
+          notes={notes}
+          updateNote={updateNote}
+          selectedNoteIndex={selectedNoteIndex}
+          setIsEditing={setIsEditing}
+          disabled={isNoteDisabled}
+        />
+        <TagArea
+          tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
+          handleDelete={handleTagDelete}
+          handleAddition={handleTagAdd}
+          handleDrag={handleTagDrag}
+          handleTagClick={handleTagClick}
+        />
       </div>
     </div>
   );
-}
+};
 
 export default App;
