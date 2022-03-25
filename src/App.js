@@ -4,6 +4,7 @@ import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
+import TagArea from './components/TagArea';
 
 const App = () => {
   const [notes, setNotes] = useState(() => {
@@ -25,10 +26,11 @@ const App = () => {
   const [selectedNoteId, setSelectedNoteId] = useState('');
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
   const [isEditing, setIsEditing] = useState(false);
-  const [isNoteDisabled, setIsNoteDisabled] = useState(false)
+  const [isNoteDisabled, setIsNoteDisabled] = useState(false);
+  const [isInit, setIsInit] = useState(true)
 
   useEffect(() => {
-    if (notes.length === 0) {
+    if (notes.length === 0 || isInit) {
       setSelectedNoteId('');
       setSelectedNoteIndex(-1);
       setIsNoteDisabled(true);
@@ -38,6 +40,8 @@ const App = () => {
     }
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
+
+  useEffect(() => { setIsInit(false) }, []);
 
   useEffect(() => {
     console.log('USEEFFECT          ' + selectedNoteId);
@@ -65,7 +69,7 @@ const App = () => {
     const date = new Date();
     const newNote = {
       id: uuidv4(),
-      text: "New Note",
+      text: "",
       date: date.toLocaleString()
     }
     const newNotes = [...notes, newNote];
@@ -99,6 +103,43 @@ const App = () => {
     setNotes(newNotes);
   }
 
+  const handleTagDelete = i => {
+    setIsEditing(true);
+    const modifiedTags = [...notes[selectedNoteIndex].tags];
+    modifiedTags.splice(i, 1);
+    const untaggedNotes = [...notes];
+    const untaggedNote = { ...notes[selectedNoteIndex], tags: modifiedTags }
+    untaggedNotes[selectedNoteIndex] = untaggedNote;
+    setNotes(untaggedNotes);
+  };
+
+  const handleTagAdd = (newTag) => {
+    setIsEditing(true);
+    const newTags = [...notes[selectedNoteIndex].tags, newTag];
+    const taggedNotes = [...notes];
+    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags }
+    taggedNotes[selectedNoteIndex] = taggedNote;
+    setNotes(taggedNotes)
+  };
+
+  const handleTagDrag = (tag, currPos, newPos) => {
+    setIsEditing(true);
+    const newTags = notes[selectedNoteIndex].tags.slice();
+
+    newTags.splice(currPos, 1);
+    newTags.splice(newPos, 0, tag);
+
+    const taggedNotes = [...notes];
+    const taggedNote = { ...notes[selectedNoteIndex], tags: newTags }
+    taggedNotes[selectedNoteIndex] = taggedNote;
+
+    setNotes(taggedNotes)
+  };
+
+  const handleTagClick = index => {
+    console.log('The tag at index ' + index + ' was clicked');
+  };
+
   return (
     <div className="container">
       <div className='sidebar'>
@@ -109,7 +150,7 @@ const App = () => {
       <div className='editor-window'>
         <EditorWindowNav notes={notes} handleDeleteNote={deleteNote} selectedNoteId={selectedNoteId} />
         <EditorWindowContent notes={notes} updateNote={updateNote} selectedNoteIndex={selectedNoteIndex} setIsEditing={setIsEditing} disabled={isNoteDisabled} />
-        <TagArea/>
+        <TagArea tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []} handleDelete={handleTagDelete} handleAddition={handleTagAdd} handleDrag={handleTagDrag} handleTagClick={handleTagClick} />
       </div>
     </div>
   );

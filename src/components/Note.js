@@ -6,7 +6,7 @@ const Note = ({ id, text, date, stateSetSelectedNoteId }) => {
       console.log(id);
       return stateSetSelectedNoteId(id);
     }} className="note">
-      <div className="preview">{text}</div>
+      <div className="preview">{text || "New Note"}</div>
       <div className="date">{date}</div>
     </div>
   );
