@@ -3,26 +3,34 @@ import { WithContext as ReactTags } from 'react-tag-input';
 
 const KeyCodes = {
   comma: 188,
-  enter: 13
+  enter: 13,
 };
 
-const TagArea = ({ tags, handleDelete, handleAddition, handleDrag, handleTagClick }) => {
+function TagArea({
+  tags,
+  handleDelete,
+  handleAddition,
+  handleDrag,
+  handleTagClick,
+}) {
   const delimiters = [KeyCodes.comma, KeyCodes.enter];
-  return (<div style={{ width: '100%', height: '100px' }}>
-    <ReactTags
-      tags={tags}
-      suggestions={[]}
-      delimiters={delimiters}
-      handleDelete={handleDelete}
-      handleAddition={handleAddition}
-      handleDrag={handleDrag}
-      handleTagClick={handleTagClick}
-      inputFieldPosition="bottom"
-      autocomplete
-      autofocus={false}
-    />
-  </div>
-  )
+  return (
+    <div className="tag">
+      <ReactTags
+        tags={tags}
+        suggestions={[]}
+        delimiters={delimiters}
+        handleDelete={handleDelete}
+        handleAddition={handleAddition}
+        handleDrag={handleDrag}
+        handleTagClick={handleTagClick}
+        inputFieldPosition="bottom"
+        autocomplete
+        autofocus={false}
+        placeholder="Enter a tag"
+      />
+    </div>
+  );
 }
 
-export default TagArea
+export default TagArea;

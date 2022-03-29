@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
@@ -6,25 +6,25 @@ import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
 import TagArea from './components/TagArea';
 
-const App = () => {
+function App() {
   const [notes, setNotes] = useState(() => {
     const localStorageValue = localStorage.getItem('notes');
     return localStorageValue
       ? JSON.parse(localStorageValue)
       : [
-          {
-            id: uuidv4(),
-            text: 'This is a note1 with a long line of text.',
-            date: '3/21/2022, 8:52:17 PM',
-            tags: [],
-          },
-          {
-            id: uuidv4(),
-            text: 'This is a note2 with a long line of text.',
-            date: '3/21/2022, 8:52:17 PM',
-            tags: [],
-          },
-        ];
+        {
+          id: uuidv4(),
+          text: 'This is a note1 with a long line of text.',
+          date: '3/21/2022, 8:52:17 PM',
+          tags: [],
+        },
+        {
+          id: uuidv4(),
+          text: 'This is a note2 with a long line of text.',
+          date: '3/21/2022, 8:52:17 PM',
+          tags: [],
+        },
+      ];
   });
 
   const [selectedNoteId, setSelectedNoteId] = useState('');
@@ -32,6 +32,10 @@ const App = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteDisabled, setIsNoteDisabled] = useState(false);
   const [isInit, setIsInit] = useState(true);
+  const [isNarrowScreen, setIsNarrowScreen] = useState(() => window.innerWidth <= 500);
+  const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] = useState(false);
+
+  const noteContentRef = useRef(null);
 
   useEffect(() => {
     if (notes.length === 0 || isInit) {
@@ -47,16 +51,28 @@ const App = () => {
 
   useEffect(() => {
     setIsInit(false);
+    const onResize = () => {
+      if (window.innerWidth <= 500) {
+        setIsNarrowScreen(true);
+      } else {
+        setIsSidebarWhenNarrowScreen(false);
+        setIsNarrowScreen(false);
+      }
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
   }, []);
 
   useEffect(() => {
-    console.log('USEEFFECT          ' + selectedNoteId);
+    console.log(`USEEFFECT          ${selectedNoteId}`);
     if (selectedNoteId) {
       for (let i = 0; i < notes.length; i++) {
         console.log(notes[i].id);
         if (notes[i].id === selectedNoteId) {
           console.log(`i wousld be ${i}`);
           setSelectedNoteIndex(i);
+
+          noteContentRef.current.focus();
           break;
         }
       }
@@ -77,6 +93,7 @@ const App = () => {
       id: uuidv4(),
       text: '',
       date: date.toLocaleString(),
+      tags: [],
     };
     const newNotes = [...notes, newNote];
     setNotes(newNotes);
@@ -92,14 +109,14 @@ const App = () => {
   //   console.log('selectedNoteId=         ' + selectedNoteId + '\n');
   // }
 
-  const updateNote = (notes, text) => {
+  const updateNote = (text) => {
     console.log('now text-----------------');
     console.log(notes[selectedNoteIndex].text);
     const date = new Date();
     const editedNotes = [...notes];
     const editedNote = {
       ...notes[selectedNoteIndex],
-      text: text,
+      text,
       date: date.toLocaleString(),
     };
     editedNotes[selectedNoteIndex] = editedNote;
@@ -147,25 +164,36 @@ const App = () => {
   };
 
   const handleTagClick = (index) => {
-    console.log('The tag at index ' + index + ' was clicked');
+    console.log(`The tag at index ${index} was clicked`);
+  };
+
+  const handleBackArrowClick = () => {
+    setIsSidebarWhenNarrowScreen(true);
   };
 
   return (
     <div className="container">
-      <div className="sidebar">
-        <SidebarNav notes={notes} handleAddNote={addNote} />
-        {/* <SidebarContent notes={notes} handleAddNote={addNote} handleGetId={getId} stateSetSelectedNoteId={setSelectedNoteId} /> */}
-        <SidebarContent
-          notes={notes}
-          handleAddNote={addNote}
-          stateSetSelectedNoteId={setSelectedNoteId}
-        />
-      </div>
+      { ((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
+        <div className="sidebar" style={{ width: isNarrowScreen ? '100%' : 240 }}>
+          <SidebarNav notes={notes} handleAddNote={addNote} />
+          <SidebarContent
+            notes={notes}
+            handleAddNote={addNote}
+            stateSetSelectedNoteId={setSelectedNoteId}
+            setNoteContentDisabled={setIsNoteDisabled}
+            noteContentRef={noteContentRef}
+          />
+        </div>
+      )}
+
+      { (!isNarrowScreen || !isSidebarWhenNarrowScreen) && (
       <div className="editor-window">
         <EditorWindowNav
           notes={notes}
           handleDeleteNote={deleteNote}
           selectedNoteId={selectedNoteId}
+          handleBackArrowClick={handleBackArrowClick}
+          isNarrowScreen={isNarrowScreen}
         />
         <EditorWindowContent
           notes={notes}
@@ -173,17 +201,24 @@ const App = () => {
           selectedNoteIndex={selectedNoteIndex}
           setIsEditing={setIsEditing}
           disabled={isNoteDisabled}
-        />
-        <TagArea
+          noteContentRef={noteContentRef}
           tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
           handleDelete={handleTagDelete}
           handleAddition={handleTagAdd}
           handleDrag={handleTagDrag}
           handleTagClick={handleTagClick}
         />
+        {/* <TagArea
+          tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
+          handleDelete={handleTagDelete}
+          handleAddition={handleTagAdd}
+          handleDrag={handleTagDrag}
+          handleTagClick={handleTagClick}
+        /> */}
       </div>
+      )}
     </div>
   );
-};
+}
 
 export default App;

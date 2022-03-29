@@ -1,15 +1,21 @@
-const Note = ({ id, text, date, stateSetSelectedNoteId }) => {
-
-  return (
-    //  <div onClick={() => handleGetId(id)} className="note">
-    <div onClick={() => {
+const Note = ({
+  id, text, date, stateSetSelectedNoteId, setNoteContentDisabled, noteContentRef,
+}) => (
+  <div
+    onClick={() => {
       console.log(id);
-      return stateSetSelectedNoteId(id);
-    }} className="note">
-      <div className="preview">{text || "New Note"}</div>
-      <div className="date">{date}</div>
-    </div>
-  );
-};
+      setNoteContentDisabled(false);
+      stateSetSelectedNoteId(id);
+      console.log(noteContentRef);
+      setTimeout(() => {
+        noteContentRef.current.focus();
+      }, 50);
+    }}
+    className="note"
+  >
+    <div className="preview">{text || 'New Note'}</div>
+    <div className="date">{date}</div>
+  </div>
+);
 
 export default Note;

@@ -1,14 +1,12 @@
-import DisplayProfilePage from "./DisplayProfilePage";
-import AddNote from "./AddNote";
+import DisplayProfilePage from './DisplayProfilePage';
+import AddNote from './AddNote';
 
-const SidebarNav = (props) => {
-  return (
-    <div className="sidebar-nav nav">
-      <DisplayProfilePage />
-      <span className="sidebar-title">My Notes</span>
-      <AddNote notes={props.notes} handleAddNote={props.handleAddNote} />
-    </div>
-  )
-}
+const SidebarNav = ({ notes, handleAddNote }) => (
+  <div className="sidebar-nav">
+    <DisplayProfilePage />
+    <span className="sidebar-title">My Notes</span>
+    <AddNote notes={notes} handleAddNote={handleAddNote} />
+  </div>
+);
 
 export default SidebarNav;

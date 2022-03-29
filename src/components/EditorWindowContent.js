@@ -1,18 +1,47 @@
-import { useState } from "react";
+import { useState } from 'react';
+import TagArea from './TagArea';
 
-const EditorWindowContent = ({ notes, selectedNoteIndex, updateNote, setIsEditing, disabled }) => {
-
+function EditorWindowContent({
+  notes,
+  selectedNoteIndex,
+  updateNote,
+  setIsEditing,
+  disabled,
+  noteContentRef,
+  tags,
+  handleDelete,
+  handleAddition,
+  handleDrag,
+  handleTagClick,
+}) {
   const handleChange = (event) => {
     setIsEditing(true);
-    updateNote(notes, event.target.value);
+    updateNote(event.target.value);
     // setIsEditing(false);
-  }
+  };
 
   return (
-    <div className="editor-widnow-content content" id="editor-window-bottom">
-      <textarea disabled={disabled} value={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.text ?? "" : ""} onChange={handleChange} className="note-detail" id="textarea-note"></textarea>
+    <div className="editor-window-content">
+      <textarea
+        className="note-editor"
+        ref={noteContentRef}
+        disabled={disabled}
+        value={
+          selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.text ?? '' : ''
+        }
+        onChange={handleChange}
+      />
+      <div className="tags-area">
+        <TagArea
+          tags={tags}
+          handleDelete={handleDelete}
+          handleAddition={handleAddition}
+          handleDrag={handleDrag}
+          handleTagClick={handleTagClick}
+        />
+      </div>
     </div>
-  )
+  );
 }
 
 export default EditorWindowContent;
