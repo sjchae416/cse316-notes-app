@@ -4,7 +4,7 @@ import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
-import TagArea from './components/TagArea';
+import ProfilePage from './components/ProfilePage';
 
 function App() {
   const [notes, setNotes] = useState(() => {
@@ -69,7 +69,7 @@ function App() {
       for (let i = 0; i < notes.length; i++) {
         console.log(notes[i].id);
         if (notes[i].id === selectedNoteId) {
-          console.log(`i wousld be ${i}`);
+          console.log(`i would be ${i}`);
           setSelectedNoteIndex(i);
 
           noteContentRef.current.focus();
@@ -217,6 +217,9 @@ function App() {
         /> */}
       </div>
       )}
+      <div className="profile-page">
+        <ProfilePage />
+      </div>
     </div>
   );
 }
