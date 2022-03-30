@@ -1,16 +1,8 @@
 const Note = ({
-  id, text, date, stateSetSelectedNoteId, setNoteContentDisabled, noteContentRef,
+  id, text, date, handleClick,
 }) => (
   <div
-    onClick={() => {
-      console.log(id);
-      setNoteContentDisabled(false);
-      stateSetSelectedNoteId(id);
-      console.log(noteContentRef);
-      setTimeout(() => {
-        noteContentRef.current.focus();
-      }, 50);
-    }}
+    onClick={handleClick}
     className="note"
   >
     <div className="preview">{text || 'New Note'}</div>

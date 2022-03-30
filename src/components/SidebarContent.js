@@ -1,8 +1,6 @@
 import NotesList from './NotesList';
 
-const SidebarContent = ({
-  notes, stateSetSelectedNoteId, setNoteContentDisabled, noteContentRef,
-}) => (
+const SidebarContent = (props) => (
   <div className="sidebar-content content">
     <div className="search-box">
       <span className="material-icons">search</span>
@@ -13,10 +11,7 @@ const SidebarContent = ({
       />
     </div>
     <NotesList
-      notes={notes}
-      stateSetSelectedNoteId={stateSetSelectedNoteId}
-      setNoteContentDisabled={setNoteContentDisabled}
-      noteContentRef={noteContentRef}
+      {...props}
     />
   </div>
 );

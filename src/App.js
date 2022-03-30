@@ -182,6 +182,7 @@ function App() {
             stateSetSelectedNoteId={setSelectedNoteId}
             setNoteContentDisabled={setIsNoteDisabled}
             noteContentRef={noteContentRef}
+            setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
           />
         </div>
       )}
@@ -207,6 +208,7 @@ function App() {
           handleAddition={handleTagAdd}
           handleDrag={handleTagDrag}
           handleTagClick={handleTagClick}
+
         />
         {/* <TagArea
           tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}

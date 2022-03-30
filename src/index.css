@@ -268,7 +268,7 @@ body,
   width: 200px;
 }
 
-.container-profile {
+/* .container-profile {
   display: none;
   position: absolute;
   top: 0%;
@@ -277,7 +277,8 @@ body,
   height: 100%;
   z-index: 5;
   background-color: rgba(0, 0, 0, 0.5);
-}
+  background-color: black;
+} */
 
 .profile-page {
   position: absolute;
@@ -286,17 +287,19 @@ body,
   transform: translate(-50%, -50%);
   border: 2px solid black;
   border-radius: 15px;
-  padding: 16px;
+  padding: 10px;
   z-index: 10;
   background-color: var(--light-background-color);
-  width: 60%;
-  height: 60%;
+  width: 40%;
+  height: 70%;
   font-size: 24px;
+  background-color: red;
 }
 
 .profile-form {
   width: 100%;
   height: 100%;
+  background-color: orange;
 }
 
 .profile-nav {
@@ -306,9 +309,10 @@ body,
   padding: 4px;
   width: 100%;
   height: 10%;
+  background-color: yellow;
 }
 .profile-nav h1 {
-  font-size: 4vw;
+  font-size: 30px;
   margin: 30px;
 }
 
@@ -327,10 +331,11 @@ body,
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 2.5%;
+  /* margin-top: 2.5%; */
   padding: 4px;
   width: 100%;
-  height: 7%;
+  height: 10%;
+  background-color: green;
 }
 
 #profile-profile {
@@ -353,20 +358,21 @@ body,
 }
 
 .profile-info {
-  margin-top: 2.5%;
+  /* margin-top: 2.5%; */
   width: 100%;
-  height: 60%;
+  height: 70%;
   padding: 4px;
+  background-color: blue;
 }
 
 .profile-info label {
   margin-left: 30px;
-  font-size: 24px;
+  font-size: 30px;
 }
 
 .profile-info input {
-  width: 95%;
-  height: 3%;
+  width: 90%;
+  height: 5%;
   padding: 15px;
   margin: 30px;
   display: block;
@@ -381,7 +387,7 @@ body,
 }
 
 .select-scheme {
-  width: 95%;
+  width: 90%;
   padding: 15px;
   margin: 30px;
   display: block;
@@ -392,11 +398,12 @@ body,
 
 .profile-bottom {
   width: 100%;
-  height: 18%;
+  height: 10%;
   padding: 4px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: navy;
 }
 
 input[type="submit"] {
