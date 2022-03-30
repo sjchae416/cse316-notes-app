@@ -8,9 +8,9 @@ import ProfilePage from './components/ProfilePage';
 
 function App() {
   const [notes, setNotes] = useState(() => {
-    const localStorageValue = localStorage.getItem('notes');
-    return localStorageValue
-      ? JSON.parse(localStorageValue)
+    const noteLocalStorageValue = localStorage.getItem('notes');
+    return noteLocalStorageValue
+      ? JSON.parse(noteLocalStorageValue)
       : [
         {
           id: uuidv4(),
@@ -26,6 +26,15 @@ function App() {
         },
       ];
   });
+  const [profile, setProfile] = useState(() => {
+    const profileLocalStorage = localStorage.getItem('profile');
+    return profileLocalStorage ? JSON.parse(profileLocalStorage)
+      : {
+        name: '',
+        email: '',
+        colorScheme: '',
+      };
+  });
 
   const [selectedNoteId, setSelectedNoteId] = useState('');
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
@@ -34,6 +43,10 @@ function App() {
   const [isInit, setIsInit] = useState(true);
   const [isNarrowScreen, setIsNarrowScreen] = useState(() => window.innerWidth <= 500);
   const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] = useState(false);
+  // const [inputName, setInputName] = useState('');
+  // const [inputEmail, setInputEmail] = useState('');
+  // const [inputColorScheme, setInputColorScheme] = useState('');
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const noteContentRef = useRef(null);
 
@@ -71,7 +84,6 @@ function App() {
         if (notes[i].id === selectedNoteId) {
           console.log(`i would be ${i}`);
           setSelectedNoteIndex(i);
-
           noteContentRef.current.focus();
           break;
         }
@@ -97,6 +109,34 @@ function App() {
     };
     const newNotes = [...notes, newNote];
     setNotes(newNotes);
+  };
+
+  // const getInputName = (text) => {
+  //   setInputName(text);
+  // };
+  // const getInputEmail = (text) => {
+  //   setInputEmail(text);
+  // };
+  // const getInputColorScheme = (text) => {
+  //   setInputColorScheme(text);
+  // };
+  const handleProfileName = (text) => {
+    const newProfile = {
+      ...profile, name: text,
+    };
+    setProfile(newProfile);
+  };
+  const handleProfileEmail = (text) => {
+    const newProfile = {
+      ...profile, email: text,
+    };
+    setProfile(newProfile);
+  };
+  const handleProfileColorScheme = (text) => {
+    const newProfile = {
+      ...profile, colorScheme: text,
+    };
+    setProfile(newProfile);
   };
 
   // const getId = (onClickId) => {
@@ -171,11 +211,24 @@ function App() {
     setIsSidebarWhenNarrowScreen(true);
   };
 
+  const handleSaveClick = (e) => {
+    e.preventDefault();
+    localStorage.setItem('profile', JSON.stringify(profile));
+  };
+
+  const openProfileModal = (e) => {
+    e.stopPropagation();
+    setIsProfileModalOpen(true);
+  };
+  const closeProfileModal = () => {
+    setIsProfileModalOpen(false);
+  };
+
   return (
-    <div className="container">
+    <div className="container" onClick={closeProfileModal}>
       { ((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
         <div className="sidebar" style={{ width: isNarrowScreen ? '100%' : 240 }}>
-          <SidebarNav notes={notes} handleAddNote={addNote} />
+          <SidebarNav notes={notes} handleAddNote={addNote} openProfileModal={openProfileModal} />
           <SidebarContent
             notes={notes}
             handleAddNote={addNote}
@@ -219,8 +272,26 @@ function App() {
         /> */}
       </div>
       )}
-      <div className="profile-page">
-        <ProfilePage />
+      <div
+        tabIndex="0"
+        style={{
+          width: isNarrowScreen ? '100%' : '40%',
+          height: isNarrowScreen ? '100%' : '70%',
+          display: isProfileModalOpen ? 'block' : 'none',
+        }}
+        className="profile-page"
+        // ref={profileContainerRef}
+        // onBlur={closeProfileModal}
+      >
+        <ProfilePage
+          handleProfileName={handleProfileName}
+          handleProfileEmail={handleProfileEmail}
+          handleProfileColorScheme={handleProfileColorScheme}
+          handleSaveClick={handleSaveClick}
+          profile={profile}
+          handleClose={closeProfileModal}
+          isNarrowScreen={isNarrowScreen}
+        />
       </div>
     </div>
   );
