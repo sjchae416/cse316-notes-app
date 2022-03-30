@@ -4,4 +4,4 @@ npm install
 
 Then run the code with
 
-npm run
+npm start
