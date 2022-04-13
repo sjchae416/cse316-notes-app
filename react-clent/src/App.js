@@ -1,54 +1,74 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
+// import { v4 as uuidv4 } from 'uuid';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
 import ProfilePage from './components/ProfilePage';
+import { getNotesAPIMethod } from './api/client';
 
 function App() {
-  const [notes, setNotes] = useState(() => {
-    const noteLocalStorageValue = localStorage.getItem('notes');
-    return noteLocalStorageValue
-      ? JSON.parse(noteLocalStorageValue)
-      : [
-        {
-          id: uuidv4(),
-          text: 'This is a note1 with a long line of text.',
-          date: '3/21/2022, 8:52:17 PM',
-          tags: [],
-        },
-        {
-          id: uuidv4(),
-          text: 'This is a note2 with a long line of text.',
-          date: '3/21/2022, 8:52:17 PM',
-          tags: [],
-        },
-      ];
-  });
-  const [profile, setProfile] = useState(() => {
-    const profileLocalStorage = localStorage.getItem('profile');
-    return profileLocalStorage ? JSON.parse(profileLocalStorage)
-      : {
-        name: '',
-        email: '',
-        colorScheme: '',
-      };
-  });
+  // const [notes, setNotes] = useState(() => {
+  //   const noteLocalStorageValue = localStorage.getItem('notes');
+  //   return noteLocalStorageValue
+  //     ? JSON.parse(noteLocalStorageValue)
+  //     : [
+  //         {
+  //           id: uuidv4(),
+  //           text: 'This is a note1 with a long line of text.',ff
+  //           date: '3/21/2022, 8:52:17 PM',
+  //           tags: [],
+  //         },
+  //         {
+  //           id: uuidv4(),
+  //           text: 'This is a note2 with a long line of text.',
+  //           date: '3/21/2022, 8:52:17 PM',
+  //           tags: [],
+  //         },
+  //       ];
+  // });
+  // const [profile, setProfile] = useState(() => {
+  //   const profileLocalStorage = localStorage.getItem('profile');
+  //   return profileLocalStorage
+  //     ? JSON.parse(profileLocalStorage)
+  //     : {
+  //         name: '',
+  //         email: '',
+  //         colorScheme: '',
+  //       };
+  // });
 
+  const [notes, setNotes] = useState([]);
+  const [profile, setProfile] = useState([]);
   const [selectedNoteId, setSelectedNoteId] = useState('');
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
   const [isEditing, setIsEditing] = useState(false);
   const [isNoteDisabled, setIsNoteDisabled] = useState(false);
   const [isInit, setIsInit] = useState(true);
-  const [isNarrowScreen, setIsNarrowScreen] = useState(() => window.innerWidth <= 500);
-  const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] = useState(false);
-  // const [inputName, setInputName] = useState('');
-  // const [inputEmail, setInputEmail] = useState('');
-  // const [inputColorScheme, setInputColorScheme] = useState('');
+  const [isNarrowScreen, setIsNarrowScreen] = useState(
+    () => window.innerWidth <= 500
+  );
+  const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
+    useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const noteContentRef = useRef(null);
+
+  useEffect(() => {
+    function fetchData() {
+      getNotesAPIMethod()
+        .then((notes) => {
+          console.log(notes);
+          //retreiving all notes
+          setNotes(notes);
+          // console.dir(notes);
+        })
+        .catch((err) => {
+          console.error('Error retrieving note data: ' + err);
+        });
+    }
+    fetchData();
+  }, [setNotes]);
 
   useEffect(() => {
     if (notes.length === 0 || isInit) {
@@ -59,7 +79,7 @@ function App() {
       setSelectedNoteId(notes[notes.length - 1].id);
       setIsNoteDisabled(false);
     }
-    localStorage.setItem('notes', JSON.stringify(notes));
+    // localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
   useEffect(() => {
@@ -102,7 +122,7 @@ function App() {
     setIsEditing(false);
     const date = new Date();
     const newNote = {
-      id: uuidv4(),
+      // id: uuidv4(),
       text: '',
       date: date.toLocaleString(),
       tags: [],
@@ -111,30 +131,33 @@ function App() {
     setNotes(newNotes);
   };
 
-  // const getInputName = (text) => {
-  //   setInputName(text);
-  // };
-  // const getInputEmail = (text) => {
-  //   setInputEmail(text);
-  // };
-  // const getInputColorScheme = (text) => {
-  //   setInputColorScheme(text);
-  // };
+  const getInputName = (text) => {
+    setInputName(text);
+  };
+  const getInputEmail = (text) => {
+    setInputEmail(text);
+  };
+  const getInputColorScheme = (text) => {
+    setInputColorScheme(text);
+  };
   const handleProfileName = (text) => {
     const newProfile = {
-      ...profile, name: text,
+      ...profile,
+      name: text,
     };
     setProfile(newProfile);
   };
   const handleProfileEmail = (text) => {
     const newProfile = {
-      ...profile, email: text,
+      ...profile,
+      email: text,
     };
     setProfile(newProfile);
   };
   const handleProfileColorScheme = (text) => {
     const newProfile = {
-      ...profile, colorScheme: text,
+      ...profile,
+      colorScheme: text,
     };
     setProfile(newProfile);
   };
@@ -213,7 +236,7 @@ function App() {
 
   const handleSaveClick = (e) => {
     e.preventDefault();
-    localStorage.setItem('profile', JSON.stringify(profile));
+    // localStorage.setItem('profile', JSON.stringify(profile));
   };
 
   const openProfileModal = (e) => {
@@ -226,9 +249,16 @@ function App() {
 
   return (
     <div className="container" onClick={closeProfileModal}>
-      { ((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
-        <div className="sidebar" style={{ width: isNarrowScreen ? '100%' : 240 }}>
-          <SidebarNav notes={notes} handleAddNote={addNote} openProfileModal={openProfileModal} />
+      {((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
+        <div
+          className="sidebar"
+          style={{ width: isNarrowScreen ? '100%' : 240 }}
+        >
+          <SidebarNav
+            notes={notes}
+            handleAddNote={addNote}
+            openProfileModal={openProfileModal}
+          />
           <SidebarContent
             notes={notes}
             handleAddNote={addNote}
@@ -240,37 +270,31 @@ function App() {
         </div>
       )}
 
-      { (!isNarrowScreen || !isSidebarWhenNarrowScreen) && (
-      <div className="editor-window">
-        <EditorWindowNav
-          notes={notes}
-          handleDeleteNote={deleteNote}
-          selectedNoteId={selectedNoteId}
-          handleBackArrowClick={handleBackArrowClick}
-          isNarrowScreen={isNarrowScreen}
-        />
-        <EditorWindowContent
-          notes={notes}
-          updateNote={updateNote}
-          selectedNoteIndex={selectedNoteIndex}
-          setIsEditing={setIsEditing}
-          disabled={isNoteDisabled}
-          noteContentRef={noteContentRef}
-          tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
-          handleDelete={handleTagDelete}
-          handleAddition={handleTagAdd}
-          handleDrag={handleTagDrag}
-          handleTagClick={handleTagClick}
-
-        />
-        {/* <TagArea
-          tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
-          handleDelete={handleTagDelete}
-          handleAddition={handleTagAdd}
-          handleDrag={handleTagDrag}
-          handleTagClick={handleTagClick}
-        /> */}
-      </div>
+      {(!isNarrowScreen || !isSidebarWhenNarrowScreen) && (
+        <div className="editor-window">
+          <EditorWindowNav
+            notes={notes}
+            handleDeleteNote={deleteNote}
+            selectedNoteId={selectedNoteId}
+            handleBackArrowClick={handleBackArrowClick}
+            isNarrowScreen={isNarrowScreen}
+          />
+          <EditorWindowContent
+            notes={notes}
+            updateNote={updateNote}
+            selectedNoteIndex={selectedNoteIndex}
+            setIsEditing={setIsEditing}
+            disabled={isNoteDisabled}
+            noteContentRef={noteContentRef}
+            tags={
+              selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []
+            }
+            handleDelete={handleTagDelete}
+            handleAddition={handleTagAdd}
+            handleDrag={handleTagDrag}
+            handleTagClick={handleTagClick}
+          />
+        </div>
       )}
       <div
         tabIndex="0"
