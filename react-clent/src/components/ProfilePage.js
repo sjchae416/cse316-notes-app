@@ -5,6 +5,7 @@ const ProfilePage = ({
   handleSaveClick,
   profile,
   handleClose,
+  isNarrowScreen,
 }) => (
   <form className="profile-form">
     <div className="profile-nav">

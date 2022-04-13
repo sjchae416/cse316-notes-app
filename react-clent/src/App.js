@@ -1,45 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
-// import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
 import EditorWindowContent from './components/EditorWindowContent';
 import ProfilePage from './components/ProfilePage';
-import { getNotesAPIMethod } from './api/client';
 
 function App() {
-  // const [notes, setNotes] = useState(() => {
-  //   const noteLocalStorageValue = localStorage.getItem('notes');
-  //   return noteLocalStorageValue
-  //     ? JSON.parse(noteLocalStorageValue)
-  //     : [
-  //         {
-  //           id: uuidv4(),
-  //           text: 'This is a note1 with a long line of text.',ff
-  //           date: '3/21/2022, 8:52:17 PM',
-  //           tags: [],
-  //         },
-  //         {
-  //           id: uuidv4(),
-  //           text: 'This is a note2 with a long line of text.',
-  //           date: '3/21/2022, 8:52:17 PM',
-  //           tags: [],
-  //         },
-  //       ];
+  // const [notes, setNotes] = useState([
+  //   {
+  //     id: uuidv4(),
+  //     text: 'This is a note1 with a long line of text.',
+  //     date: '3/21/22, 8:52:17 PM',
+  //   },
+  //   {
+  //     id: uuidv4(),
+  //     text: 'This is a note2 with a long line of text.',
+  //     date: '3/21/22, 8:52:17 PM',
+  //   },
+  // ]);
+  // const [notes, setNotes] = useState(async () => {
+  //   const res = await fetch('http://localhost:5000/api/notes');
+  //   const d = await res.json();
+  //   return d;
   // });
-  // const [profile, setProfile] = useState(() => {
-  //   const profileLocalStorage = localStorage.getItem('profile');
-  //   return profileLocalStorage
-  //     ? JSON.parse(profileLocalStorage)
-  //     : {
-  //         name: '',
-  //         email: '',
-  //         colorScheme: '',
-  //       };
-  // });
-
   const [notes, setNotes] = useState([]);
-  const [profile, setProfile] = useState([]);
+
+  const [profile, setProfile] = useState({
+    name: '',
+    email: '',
+    colorScheme: '',
+  });
+
   const [selectedNoteId, setSelectedNoteId] = useState('');
   const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
   const [isEditing, setIsEditing] = useState(false);
@@ -50,27 +42,32 @@ function App() {
   );
   const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
     useState(false);
+  // const [inputName, setInputName] = useState('');
+  // const [inputEmail, setInputEmail] = useState('');
+  // const [inputColorScheme, setInputColorScheme] = useState('');
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const noteContentRef = useRef(null);
 
-  useEffect(() => {
-    function fetchData() {
-      getNotesAPIMethod()
-        .then((notes) => {
-          console.log(notes);
-          //retreiving all notes
-          setNotes(notes);
-          // console.dir(notes);
-        })
-        .catch((err) => {
-          console.error('Error retrieving note data: ' + err);
-        });
-    }
-    fetchData();
-  }, [setNotes]);
+  // useEffect(() => {
+  //   function fetchData() {
+  //     getNotesAPIMethod()
+  //       .then((notes) => {
+  //         console.log(notes);
+  //         //retreiving all notes
+  //         setNotes(notes);
+  //         // console.dir(notes);
+  //       })
+  //       .catch((err) => {
+  //         console.error('Error retrieving note data: ' + err);
+  //       });
+  //   }
+  //   fetchData();
+  // }, [setNotes]);
 
   useEffect(() => {
+    console.log('test notes!!!!!!!!!!!!');
+    console.log(notes);
     if (notes.length === 0 || isInit) {
       setSelectedNoteId('');
       setSelectedNoteIndex(-1);
@@ -79,10 +76,18 @@ function App() {
       setSelectedNoteId(notes[notes.length - 1].id);
       setIsNoteDisabled(false);
     }
+
     // localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
 
   useEffect(() => {
+    // componentDidMount 랑 같음
+    const fetchData = async () => {
+      const res = await fetch('http://localhost:5000/api/notes');
+      const d = await res.json();
+      console.log(d);
+      setNotes(d);
+    };
     setIsInit(false);
     const onResize = () => {
       if (window.innerWidth <= 500) {
@@ -93,6 +98,7 @@ function App() {
       }
     };
     window.addEventListener('resize', onResize);
+    fetchData();
     return () => window.removeEventListener('resize', onResize);
   }, []);
 
@@ -122,7 +128,7 @@ function App() {
     setIsEditing(false);
     const date = new Date();
     const newNote = {
-      // id: uuidv4(),
+      id: uuidv4(),
       text: '',
       date: date.toLocaleString(),
       tags: [],
@@ -131,15 +137,15 @@ function App() {
     setNotes(newNotes);
   };
 
-  const getInputName = (text) => {
-    setInputName(text);
-  };
-  const getInputEmail = (text) => {
-    setInputEmail(text);
-  };
-  const getInputColorScheme = (text) => {
-    setInputColorScheme(text);
-  };
+  // const getInputName = (text) => {
+  //   setInputName(text);
+  // };
+  // const getInputEmail = (text) => {
+  //   setInputEmail(text);
+  // };
+  // const getInputColorScheme = (text) => {
+  //   setInputColorScheme(text);
+  // };
   const handleProfileName = (text) => {
     const newProfile = {
       ...profile,
@@ -294,6 +300,13 @@ function App() {
             handleDrag={handleTagDrag}
             handleTagClick={handleTagClick}
           />
+          {/* <TagArea
+          tags={selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []}
+          handleDelete={handleTagDelete}
+          handleAddition={handleTagAdd}
+          handleDrag={handleTagDrag}
+          handleTagClick={handleTagClick}
+        /> */}
         </div>
       )}
       <div

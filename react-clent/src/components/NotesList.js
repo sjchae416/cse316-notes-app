@@ -28,15 +28,21 @@ const NotesList = ({
       {notes
         .slice(0)
         .reverse()
-        .map((note) => (
-          <Note
-            key={note.id}
-            id={note.id}
-            text={note.text}
-            date={note.date}
-            handleClick={() => { handleNoteClick(note.id); }}
-          />
-        ))}
+        .map((note) => {
+          console.log('note is: ');
+          console.log(note);
+          return (
+            <Note
+              key={note.id}
+              id={note.id}
+              text={note.text}
+              date={note.date}
+              handleClick={() => {
+                handleNoteClick(note.id);
+              }}
+            />
+          );
+        })}
     </div>
   );
 };
