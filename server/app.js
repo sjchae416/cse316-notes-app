@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Note = require('./models/note');
 const User = require('./models/user');
 const bodyParser = require('body-parser');
+const note = require('./models/note');
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }));
@@ -17,26 +18,65 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // get all notes
 app.get('/api/notes', async function (req, res) {
-  //  res.send('display notes here')
-  const notes = await Note.find({});
-  const modifiedNotes = notes.map((el) => {
-    const ele = el.toObject();
-    const ret = { ...ele, id: ele._id };
-    delete ret['_id'];
-    return ret;
-  });
-  // res.json(notes);
-  res.json(modifiedNotes);
-  console.log(notes);
+	//  res.send('display notes here')
+	const notes = await Note.find({});
+	const modifiedNotes = notes.map((mappedNote) => {
+		const notesFormat_id = mappedNote.toObject();
+		const notesFormatid = { id: notesFormat_id._id, ...notesFormat_id };
+		delete notesFormatid['_id'];
+		return notesFormatid;
+	});
+	// res.json(notes);
+	res.json(modifiedNotes);
+	// console.log(notes);
 });
 
 // create new note
+app.post('/api/notes', async function (req, res) {
+	console.log('Posted with body: ' + JSON.stringify(req.body));
+
+	const newNote = new Note({
+		text: req.body.text,
+		lastUpdatedDate: req.body.lastUpdatedDate,
+		tags: req.body.tags,
+	});
+	await newNote.save();
+	res.json(newNote);
+});
 
 // update a note
+app.put('/api/notes/:id', async function (req, res) {
+	let id = req.params.id;
+	console.log('PUT with id: ' + id + ', body: ' + JSON.stringify(req.body));
+	// This below method automatically saves it to the database
+	Note.findByIdAndUpdate(
+		id,
+		{
+			text: req.body.text,
+			lastUpdatedDate: req.body.lastUpdatedDate,
+			tags: req.body.tags,
+		},
+		function (err, result) {
+			if (err) {
+				console.log('ERROR: ' + err);
+				res.send(err);
+			} else {
+				// Status 204 represents success with no content
+				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
+				res.sendStatus(204);
+			}
+		}
+	);
+});
 
 // delete a note
+app.delete('api/notes/:id', async function (req, res) {
+	let id = req.params.id;
+	const afterDelete = await note.findByIdAndDelete(id);
+	res.json(afterDelete);
+});
 
 port = process.env.PORT || 5000;
 app.listen(port, () => {
-  console.log('server started!');
+	console.log('server started!');
 });

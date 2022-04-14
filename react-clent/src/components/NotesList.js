@@ -29,8 +29,8 @@ const NotesList = ({
         .slice(0)
         .reverse()
         .map((note) => {
-          console.log('note is: ');
-          console.log(note);
+          // console.log('note is: ');
+          // console.log(note);
           return (
             <Note
               key={note.id}
