@@ -54,6 +54,10 @@ function App() {
 	// }, [setNotes]);
 
 	useEffect(() => {
+		getNotesAPIMethod().then((response) => {
+			setNotes(response);
+		});
+
 		if (notes.length === 0 || isInit) {
 			setSelectedNoteId('');
 			setSelectedNoteIndex(-1);
@@ -66,14 +70,14 @@ function App() {
 		// localStorage.setItem('notes', JSON.stringify(notes));
 	}, [notes]);
 
-  // same as componentDidMount
-  const fetchData = async () => {
-    const res = await fetch('http://localhost:5000/api/notes');
-    const fetchedNote = await res.json();
-    // console.log(fetchedNote);
-    setNotes(fetchedNote);
-  };
 	useEffect(() => {
+		// same as componentDidMount
+		const fetchData = async () => {
+			const res = await fetch('http://localhost:5000/api/notes');
+			const fetchedNote = await res.json();
+			// console.log(fetchedNote);
+			setNotes(fetchedNote);
+		};
 
 		setIsInit(false);
 		const onResize = () => {
