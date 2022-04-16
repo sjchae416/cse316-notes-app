@@ -26,7 +26,7 @@ export const createNoteAPIMethod = (note) => {
 };
 
 export const getNoteByIdAPIMethod = (noteId) => {
-	return fetch('/api/notes/${noteId}', {
+	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 	})
 		.then(checkStatus)
@@ -35,18 +35,18 @@ export const getNoteByIdAPIMethod = (noteId) => {
 
 // update a note
 export const updateNoteAPIMethod = (note) => {
-	return fetch('api/notes', {
+	return fetch(`/api/notes/${note.id}`, {
 		...defaultHeaders,
 		method: 'PUT',
 		body: JSON.stringify(note),
 	})
 		.then(checkStatus)
-		.then(parseJSON);
+		.then();
 };
 
 // delete a note
 export const deleteNoteAPIMethod = (noteId) => {
-	return fetch('api/notes/${noteId}', {
+	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
 		method: 'DELETE',
 	})

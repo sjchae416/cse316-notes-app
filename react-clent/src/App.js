@@ -9,7 +9,9 @@ import {
 	createNoteAPIMethod,
 	deleteNoteAPIMethod,
 	getNotesAPIMethod,
+	updateNoteAPIMethod,
 } from './api/client';
+import useDebounce from './hooks/useDebounce';
 
 function App() {
 	const [notes, setNotes] = useState([]);
@@ -37,6 +39,55 @@ function App() {
 
 	const noteContentRef = useRef(null);
 
+	const debounceUpdating = useDebounce(
+		selectedNoteIndex === -1 ? '' : notes[selectedNoteIndex].text,
+		1000
+	);
+
+	useEffect(() => {
+		// 실제업데이트
+		if (selectedNoteIndex !== -1) {
+			updateNoteAPIMethod(notes[selectedNoteIndex]);
+		}
+	}, [debounceUpdating]);
+
+	useEffect(() => {
+		// same as componentDidMount
+		const fetchData = async () => {
+			const data = await getNotesAPIMethod();
+			setNotes(data);
+		};
+
+		setIsInit(false);
+
+		fetchData();
+
+		const onResize = () => {
+			if (window.innerWidth <= 500) {
+				setIsNarrowScreen(true);
+			} else {
+				setIsSidebarWhenNarrowScreen(false);
+				setIsNarrowScreen(false);
+			}
+		};
+
+		window.addEventListener('resize', onResize);
+		return () => window.removeEventListener('resize', onResize);
+	}, []);
+
+	useEffect(() => {
+		if (notes.length === 0 || isInit) {
+			setSelectedNoteId('');
+			setSelectedNoteIndex(-1);
+			setIsNoteDisabled(true);
+		} else if (!isEditing) {
+			// setSelectedNoteId(notes[notes.length - 1].id);
+			setIsNoteDisabled(false);
+		}
+
+		// localStorage.setItem('notes', JSON.stringify(notes));
+	}, [notes]);
+
 	// useEffect(() => {
 	//   function fetchData() {
 	//     getNotesAPIMethod()
@@ -54,53 +105,18 @@ function App() {
 	// }, [setNotes]);
 
 	useEffect(() => {
-		getNotesAPIMethod().then((response) => {
-			setNotes(response);
-		});
-
-		if (notes.length === 0 || isInit) {
-			setSelectedNoteId('');
-			setSelectedNoteIndex(-1);
-			setIsNoteDisabled(true);
-		} else if (!isEditing) {
-			setSelectedNoteId(notes[notes.length - 1].id);
-			setIsNoteDisabled(false);
-		}
-
-		// localStorage.setItem('notes', JSON.stringify(notes));
-	}, [notes]);
-
-	useEffect(() => {
-		// same as componentDidMount
-		const fetchData = async () => {
-			const res = await fetch('http://localhost:5000/api/notes');
-			const fetchedNote = await res.json();
-			// console.log(fetchedNote);
-			setNotes(fetchedNote);
-		};
-
-		setIsInit(false);
-		const onResize = () => {
-			if (window.innerWidth <= 500) {
-				setIsNarrowScreen(true);
-			} else {
-				setIsSidebarWhenNarrowScreen(false);
-				setIsNarrowScreen(false);
-			}
-		};
-		window.addEventListener('resize', onResize);
-		fetchData();
-		return () => window.removeEventListener('resize', onResize);
-	}, []);
-
-	useEffect(() => {
 		// console.log(`useEffect: selectedNoteId          ${selectedNoteId}`);
+		// console.log("🚀 ~ file: App.js ~ line 110 ~ useEffect ~ setSelectedNoteIndex", setSelectedNoteIndex)
 		if (selectedNoteId) {
 			for (let i = 0; i < notes.length; i++) {
 				// console.log('notes[i].id:     ' + notes[i].id);
 				if (notes[i].id === selectedNoteId) {
 					// console.log(`i would be ${i}`);
 					setSelectedNoteIndex(i);
+					console.log(
+						'App.js ; useEffect[selectedNoteId] ; selectedNoteId:     ' +
+							selectedNoteId
+					);
 					noteContentRef.current.focus();
 					break;
 				}
@@ -110,28 +126,28 @@ function App() {
 		}
 	}, [selectedNoteId]);
 
-	useEffect(() => {
-		console.log('---------------this is selected Note--------');
-		console.log(notes[selectedNoteIndex]);
-		console.log(
-			'🚀 ~ file: App.js ~ line  ~ useEffect ~ selectedNoteId',
-			selectedNoteId
-		);
-	}, [selectedNoteIndex]);
+	// useEffect(() => {
+	// 	console.log('---------------this is selected Note--------');
+	// 	console.log(notes[selectedNoteIndex]);
+	// 	console.log(
+	// 		'🚀 ~ file: App.js ~ line  ~ useEffect ~ selectedNoteId',
+	// 		selectedNoteId,
+	// 		'dfadsfdsfadf' + selectedNoteIndex
+	// 	);
+	// }, [selectedNoteIndex]);
 
-	const addNote = () => {
+	const addNote = async () => {
 		setIsEditing(false);
-		const date = new Date();
 		const newNote = {
 			text: '',
-			lastUpdatedDate: date.toLocaleString(),
+			lastUpdatedDate: new Date(),
 			tags: [],
 		};
 
-		createNoteAPIMethod(newNote, (response) => {
+		await createNoteAPIMethod(newNote, (response) => {
 			setNotes([...notes, response]);
 		});
-		console.log(notes);
+		// console.log(notes);
 	};
 
 	// const getInputName = (text) => {
@@ -176,27 +192,32 @@ function App() {
 	// }
 
 	const updateNote = (text) => {
-		console.log('now text-----------------');
-		console.log(notes[selectedNoteIndex].text);
+		// console.log('now text-----------------');
+		// console.log(notes[selectedNoteIndex].text);
 		const date = new Date();
 		const editedNotes = [...notes];
 		const editedNote = {
 			...notes[selectedNoteIndex],
 			text,
-			lastUpdatedDate: date.toLocaleString(),
+			lastUpdatedDate: date,
 		};
 		editedNotes[selectedNoteIndex] = editedNote;
 
 		setNotes(editedNotes);
 	};
 
-	const deleteNote = (id) => {
+	const deleteNote = async (id) => {
 		console.log('🚀 ~ file: App.js ~ line 187 ~ deleteNote ~ id', id);
-		deleteNoteAPIMethod(id, (response) => {
+		await deleteNoteAPIMethod(id, (response) => {
 			console.log(response);
 		});
 		setIsEditing(false);
 		getNotesAPIMethod().then((response) => {
+			if (notes.length == 0) {
+				setSelectedNoteIndex('');
+			} else {
+				setSelectedNoteIndex(notes[notes.length - 1].id);
+			}
 			setNotes(response);
 		});
 	};
@@ -270,6 +291,7 @@ function App() {
 					<SidebarContent
 						notes={notes}
 						handleAddNote={addNote}
+						selectedNoteId={selectedNoteId}
 						stateSetSelectedNoteId={setSelectedNoteId}
 						setNoteContentDisabled={setIsNoteDisabled}
 						noteContentRef={noteContentRef}
