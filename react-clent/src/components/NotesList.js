@@ -1,10 +1,5 @@
 import Note from './Note';
 
-// const [notes, setNotes] = useState(props.notes);
-// useEffect(() => {
-//   setNotes(props.notes);
-//   console.log(props.notes);
-// }, [props.notes]);
 const NotesList = ({
 	notes,
 	selectedNoteId,
@@ -19,8 +14,6 @@ const NotesList = ({
 				.slice(0)
 				.reverse()
 				.map((note) => {
-					// console.log('note is: ');
-					// console.log(note);
 					return (
 						<Note
 							key={note.id}

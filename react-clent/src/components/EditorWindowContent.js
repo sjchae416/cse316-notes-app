@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import TagArea from './TagArea';
 
 function EditorWindowContent({

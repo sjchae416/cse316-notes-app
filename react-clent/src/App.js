@@ -32,9 +32,6 @@ function App() {
 	);
 	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
 		useState(false);
-	// const [inputName, setInputName] = useState('');
-	// const [inputEmail, setInputEmail] = useState('');
-	// const [inputColorScheme, setInputColorScheme] = useState('');
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
 	const noteContentRef = useRef(null);
@@ -45,7 +42,7 @@ function App() {
 	);
 
 	useEffect(() => {
-		// 실제업데이트
+		// actual update
 		if (selectedNoteIndex !== -1) {
 			updateNoteAPIMethod(notes[selectedNoteIndex]);
 		}
@@ -84,39 +81,13 @@ function App() {
 			// setSelectedNoteId(notes[notes.length - 1].id);
 			setIsNoteDisabled(false);
 		}
-
-		// localStorage.setItem('notes', JSON.stringify(notes));
 	}, [notes]);
 
-	// useEffect(() => {
-	//   function fetchData() {
-	//     getNotesAPIMethod()
-	//       .then((notes) => {
-	//         console.log(notes);
-	//         //retreiving all notes
-	//         setNotes(notes);
-	//         // console.dir(notes);
-	//       })
-	//       .catch((err) => {
-	//         console.error('Error retrieving note data: ' + err);
-	//       });
-	//   }
-	//   fetchData();
-	// }, [setNotes]);
-
 	useEffect(() => {
-		// console.log(`useEffect: selectedNoteId          ${selectedNoteId}`);
-		// console.log("🚀 ~ file: App.js ~ line 110 ~ useEffect ~ setSelectedNoteIndex", setSelectedNoteIndex)
 		if (selectedNoteId) {
 			for (let i = 0; i < notes.length; i++) {
-				// console.log('notes[i].id:     ' + notes[i].id);
 				if (notes[i].id === selectedNoteId) {
-					// console.log(`i would be ${i}`);
 					setSelectedNoteIndex(i);
-					console.log(
-						'App.js ; useEffect[selectedNoteId] ; selectedNoteId:     ' +
-							selectedNoteId
-					);
 					noteContentRef.current.focus();
 					break;
 				}
@@ -126,15 +97,21 @@ function App() {
 		}
 	}, [selectedNoteId]);
 
-	// useEffect(() => {
-	// 	console.log('---------------this is selected Note--------');
-	// 	console.log(notes[selectedNoteIndex]);
-	// 	console.log(
-	// 		'🚀 ~ file: App.js ~ line  ~ useEffect ~ selectedNoteId',
-	// 		selectedNoteId,
-	// 		'dfadsfdsfadf' + selectedNoteIndex
-	// 	);
-	// }, [selectedNoteIndex]);
+	useEffect(() => {
+		console.log('----- useEffect([selectedNoteIndex]) -----');
+		console.log(
+			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ notes[selectedNoteIndex]',
+			notes[selectedNoteIndex]
+		);
+		console.log(
+			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ selectedNoteIndex',
+			selectedNoteIndex
+		);
+		console.log(
+			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ selectedNoteId',
+			selectedNoteId
+		);
+	}, [selectedNoteIndex]);
 
 	const addNote = async () => {
 		setIsEditing(false);
@@ -147,18 +124,8 @@ function App() {
 		await createNoteAPIMethod(newNote, (response) => {
 			setNotes([...notes, response]);
 		});
-		// console.log(notes);
 	};
 
-	// const getInputName = (text) => {
-	//   setInputName(text);
-	// };
-	// const getInputEmail = (text) => {
-	//   setInputEmail(text);
-	// };
-	// const getInputColorScheme = (text) => {
-	//   setInputColorScheme(text);
-	// };
 	const handleProfileName = (text) => {
 		const newProfile = {
 			...profile,
@@ -181,19 +148,7 @@ function App() {
 		setProfile(newProfile);
 	};
 
-	// const getId = (onClickId) => {
-	//   // console.log("e=         " + e);
-	//   // console.log("e.target=         " + e.target);
-	//   // console.log("e.target.id=         " + e.target.id);
-	//   // console.log("e.currentTarget.id=         " + e.currentTarget.id);
-	//   setSelectedNoteId(onClickId);
-	//   console.log('onClickId=         ' + onClickId);
-	//   console.log('selectedNoteId=         ' + selectedNoteId + '\n');
-	// }
-
 	const updateNote = (text) => {
-		// console.log('now text-----------------');
-		// console.log(notes[selectedNoteIndex].text);
 		const date = new Date();
 		const editedNotes = [...notes];
 		const editedNote = {
@@ -265,7 +220,6 @@ function App() {
 
 	const handleSaveClick = (e) => {
 		e.preventDefault();
-		// localStorage.setItem('profile', JSON.stringify(profile));
 	};
 
 	const openProfileModal = (e) => {
