@@ -27,13 +27,12 @@ app.get('/api/notes', async function (req, res) {
 		const notesFormatid = {
 			id: notesFormat_id._id,
 			...notesFormat_id,
-			date: notesFormat_id.lastUpdatedDate,
 		};
 		delete notesFormatid['_id'];
-		delete notesFormatid['lastUpdatedDate'];
 		return notesFormatid;
 	});
 	// res.json(notes);
+	console.log('🚀 ~ file: app.js ~ line 38 ~ modifiedNotes', modifiedNotes);
 	res.json(modifiedNotes);
 	// console.log(notes);
 });

@@ -1,17 +1,24 @@
 import NotesList from './NotesList';
 
-const SidebarContent = (props) => (
-	<div className="sidebar-content content">
-		<div className="search-box">
-			<span className="material-icons">search</span>
-			<input
-				className="input-search"
-				type="text"
-				placeholder="Search all notes"
-			/>
+function SidebarContent(props) {
+	const handleSearch = (event) => {
+		props.searchNotes(event.target.value);
+	};
+
+	return (
+		<div className="sidebar-content content">
+			<div className="search-box">
+				<span className="material-icons">search</span>
+				<input
+					className="input-search"
+					type="text"
+					placeholder="Search all notes"
+					onChange={handleSearch}
+				/>
+			</div>
+			<NotesList {...props} />
 		</div>
-		<NotesList {...props} />
-	</div>
-);
+	);
+}
 
 export default SidebarContent;

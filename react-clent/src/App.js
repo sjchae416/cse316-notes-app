@@ -1,5 +1,12 @@
+// 1. 노트 추가 시 500 에러
+// 2. 노트 삭제 시 db에서 지워지기는 하나 front 에서 새로고침을 해야함
+// 3. tag 인식 못함(노트에 추가 안한듯)
+// 4. 프로필 화면 입력칸을 눌러도 화면 꺼짐
+// 5. 검색 기능 필터링
+// 6. 프로필 정보 저장 및 불러오기
+// 7. 노트 선택 시 색깔 주기
+
 import React, { useState, useEffect, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
 import EditorWindowNav from './components/EditorWindowNav';
@@ -15,15 +22,14 @@ import useDebounce from './hooks/useDebounce';
 
 function App() {
 	const [notes, setNotes] = useState([]);
-
 	const [profile, setProfile] = useState({
 		name: '',
 		email: '',
 		colorScheme: '',
 	});
-
 	const [selectedNoteId, setSelectedNoteId] = useState('');
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
+	const [searchInput, setSearchInput] = useState('');
 	const [isEditing, setIsEditing] = useState(false);
 	const [isNoteDisabled, setIsNoteDisabled] = useState(false);
 	const [isInit, setIsInit] = useState(true);
@@ -33,9 +39,7 @@ function App() {
 	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
 		useState(false);
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-
 	const noteContentRef = useRef(null);
-
 	const debounceUpdating = useDebounce(
 		selectedNoteIndex === -1 ? '' : notes[selectedNoteIndex].text,
 		1000
@@ -52,6 +56,7 @@ function App() {
 		// same as componentDidMount
 		const fetchData = async () => {
 			const data = await getNotesAPIMethod();
+			console.log('🚀 ~ file: App.js ~ line 54 ~ fetchData ~ data', data);
 			setNotes(data);
 		};
 
@@ -113,7 +118,9 @@ function App() {
 		);
 	}, [selectedNoteIndex]);
 
+	// create new note
 	const addNote = async () => {
+		setSearchInput('');
 		setIsEditing(false);
 		const newNote = {
 			text: '',
@@ -124,6 +131,46 @@ function App() {
 		await createNoteAPIMethod(newNote, (response) => {
 			setNotes([...notes, response]);
 		});
+	};
+
+	// update a note
+	const updateNote = (text) => {
+		// const lastUpdatedDate = new Date();
+		const editedNotes = [...notes];
+		const editedNote = {
+			...notes[selectedNoteIndex],
+			text,
+			lastUpdatedDate: new Date(),
+		};
+		editedNotes[selectedNoteIndex] = editedNote;
+
+		setNotes(editedNotes);
+	};
+
+	// delete a note
+	const deleteNote = async (id) => {
+		await deleteNoteAPIMethod(id, (response) => {
+			console.log(response);
+		});
+		setIsEditing(false);
+		getNotesAPIMethod().then((response) => {
+			if (notes.length == 0) {
+				// setSelectedNoteIndex('');
+				setSelectedNoteIndex(-1);
+			} else {
+				setSelectedNoteIndex(notes[notes.length - 1].id);
+			}
+			setNotes(response);
+		});
+	};
+
+	// search notes
+	const searchNotes = (text) => {
+		setSearchInput(text);
+		console.log('🚀 ~ file: App.js ~ line 162 ~ searchNotes ~ text', text);
+		const searchedNotes = [...notes].filter((note) => note.text === text);
+		console.log(notes);
+		setNotes(searchedNotes);
 	};
 
 	const handleProfileName = (text) => {
@@ -146,35 +193,6 @@ function App() {
 			colorScheme: text,
 		};
 		setProfile(newProfile);
-	};
-
-	const updateNote = (text) => {
-		const date = new Date();
-		const editedNotes = [...notes];
-		const editedNote = {
-			...notes[selectedNoteIndex],
-			text,
-			lastUpdatedDate: date,
-		};
-		editedNotes[selectedNoteIndex] = editedNote;
-
-		setNotes(editedNotes);
-	};
-
-	const deleteNote = async (id) => {
-		console.log('🚀 ~ file: App.js ~ line 187 ~ deleteNote ~ id', id);
-		await deleteNoteAPIMethod(id, (response) => {
-			console.log(response);
-		});
-		setIsEditing(false);
-		getNotesAPIMethod().then((response) => {
-			if (notes.length == 0) {
-				setSelectedNoteIndex('');
-			} else {
-				setSelectedNoteIndex(notes[notes.length - 1].id);
-			}
-			setNotes(response);
-		});
 	};
 
 	const handleTagDelete = (i) => {
@@ -244,12 +262,14 @@ function App() {
 					/>
 					<SidebarContent
 						notes={notes}
-						handleAddNote={addNote}
 						selectedNoteId={selectedNoteId}
 						stateSetSelectedNoteId={setSelectedNoteId}
 						setNoteContentDisabled={setIsNoteDisabled}
 						noteContentRef={noteContentRef}
 						setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
+						searchInput={searchInput}
+						setSearchInput={setSearchInput}
+						searchNotes={searchNotes}
 					/>
 				</div>
 			)}
