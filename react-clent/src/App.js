@@ -1,10 +1,7 @@
-// 1. 노트 추가 시 500 에러
-// 2. 노트 삭제 시 db에서 지워지지만 front에서 새로고침을 해야함
-// 3. tag 인식 못함(노트에 추가 안한듯) failed prop type
-// 5. 첫 검색 성공 후 지울 때 인식 못함
-// 6. 프로필 정보 저장 및 불러오기
-// 8. 화면 줄어들고 노트 수정하고 다시 돌아가면 에러
-// 7. 노트 선택 시 색깔 주기
+// 1. 첫 검색 성공 후 지울 때 인식 못함
+// 2. 프로필 정보 저장 및 불러오기
+// 3. 화면 줄어들고 노트 수정하고 다시 돌아가면 에러
+// 4. 노트 선택 시 색깔 주기
 
 import React, { useState, useEffect, useRef } from 'react';
 import SidebarNav from './components/SidebarNav';
@@ -22,19 +19,10 @@ import useDebounce from './hooks/useDebounce';
 
 function App() {
 	const [notes, setNotes] = useState([]);
-	console.log('🚀 ~ file: App.js ~ line 25 ~ App ~ notes', notes);
 
-	const [profile, setProfile] = useState({
-		name: '',
-		email: '',
-		colorScheme: '',
-	});
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
-	const [selectedNoteId, setSelectedNoteId] = useState('');
+
 	const [searchInput, setSearchInput] = useState('');
-	const [isEditing, setIsEditing] = useState(false);
-	const [isNoteDisabled, setIsNoteDisabled] = useState(false);
-	const [isInit, setIsInit] = useState(true);
 	const [isNarrowScreen, setIsNarrowScreen] = useState(
 		() => window.innerWidth <= 500
 	);
@@ -42,33 +30,40 @@ function App() {
 		useState(false);
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 	const noteContentRef = useRef(null);
-	const debounceUpdating = useDebounce(
-		selectedNoteIndex === -1 ? '' : notes[selectedNoteIndex].text,
-		1000
-	);
+	const [noteTextValue, setNoteTextValue] = useState('');
+	const debounceValue = useDebounce(noteTextValue, 1000);
+	const [selectedNoteId, setSelectedNoteId] = useState(-1);
+	const [wasEdited, setWasEdited] = useState(false);
+	const [isUpdating, setIsUpdating] = useState(false);
+
+	const [profile, setProfile] = useState({
+		name: '',
+		email: '',
+		colorScheme: '',
+	});
 
 	const profileContainerRef = useRef(null);
 	const profileCloseButtonRef = useRef(null);
 
-	// useEffect(() => {
-	// 	// actual update
-	// 	if (selectedNoteIndex !== -1) {
-	// 		updateNoteAPIMethod(notes[selectedNoteIndex]);
-	// 	}
-	// }, [debounceUpdating]);
-
+	// fetching Notes Data
 	useEffect(() => {
 		// same as componentDidMount
 		const fetchData = async () => {
 			const data = await getNotesAPIMethod();
-			console.log('🚀 ~ file: App.js ~ line 54 ~ fetchData ~ data', data);
-			setNotes(data);
+			const willBeMountedNotes = data.map((note) => {
+				return {
+					...note,
+					lastUpdatedDate: new Date(note.lastUpdatedDate),
+				};
+			});
+			setNotes(willBeMountedNotes);
 		};
 
-		setIsInit(false);
-
 		fetchData();
+	}, []);
 
+	// resizing windows
+	useEffect(() => {
 		const onResize = () => {
 			if (window.innerWidth <= 500) {
 				setIsNarrowScreen(true);
@@ -81,43 +76,41 @@ function App() {
 		window.addEventListener('resize', onResize);
 		return () => window.removeEventListener('resize', onResize);
 	}, []);
+	// same as componentDidMount
 
+	// changing text contents
 	useEffect(() => {
-		if (notes.length === 0 || isInit) {
-			setSelectedNoteId('');
-			setSelectedNoteIndex(-1);
-			setIsNoteDisabled(true);
-		} else if (!isEditing) {
-			// setSelectedNoteId(notes[notes.length - 1].id);
-			setIsNoteDisabled(false);
+		if (selectedNoteIndex !== -1) {
+			setNoteTextValue(notes[selectedNoteIndex]);
 		}
-	}, [notes]);
+	}, [selectedNoteIndex, notes]);
 
 	useEffect(() => {
-		if (selectedNoteId) {
+		const updateData = async () => {
+			if (notes && selectedNoteIndex !== -1 && isUpdating) {
+				await updateNoteAPIMethod(notes[selectedNoteIndex]);
+				setIsUpdating(false);
+			}
+		};
+		updateData();
+	}, [debounceValue]);
+
+	useEffect(() => {
+		if (wasEdited) {
 			for (let i = 0; i < notes.length; i++) {
-				if (notes[i].id === selectedNoteId) {
+				if (notes[i]._id === selectedNoteId) {
 					setSelectedNoteIndex(i);
-					noteContentRef.current.focus();
-					break;
 				}
 			}
-		} else {
-			setSelectedNoteIndex(-1);
+			setWasEdited(false);
 		}
-	}, [selectedNoteId]);
+	}, [wasEdited]);
 
-	useEffect(() => {
-		console.log('----- useEffect([selectedNoteIndex]) -----');
-		console.log(
-			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ notes[selectedNoteIndex]',
-			notes[selectedNoteIndex]
-		);
-		console.log(
-			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ selectedNoteIndex',
-			selectedNoteIndex
-		);
-	}, [selectedNoteIndex]);
+	// useEffect(() => {
+
+	// 	await updateNoteAPIMethod(editedNote);
+	// 	const fetchedNotes = await getNotesAPIMethod();
+	// },[notes])
 
 	useEffect(() => {
 		const notesCopy = [...notes];
@@ -135,51 +128,82 @@ function App() {
 		}
 	}, [searchInput]);
 
+	useEffect(() => {
+		setSelectedNoteId(notes[selectedNoteIndex]?._id || -1);
+	}, [selectedNoteIndex]);
+
 	// create new note
 	const addNote = async () => {
 		setSearchInput('');
-		setIsEditing(false);
+
+		const now = new Date();
 		const newNote = {
 			text: '',
-			lastUpdatedDate: new Date(),
+			lastUpdatedDate: now,
 			tags: [],
 		};
 
-		await createNoteAPIMethod(newNote, (response) => {
-			setNotes([...notes, response]);
-		});
+		await createNoteAPIMethod(newNote);
+		const fetchedNotes = await getNotesAPIMethod();
+		setNotes(
+			fetchedNotes.map((note) => {
+				return {
+					...note,
+					lastUpdatedDate: new Date(note.lastUpdatedDate),
+				};
+			})
+		);
+		setSelectedNoteIndex(0);
+		if (selectedNoteIndex !== -1) {
+			setTimeout(() => {
+				noteContentRef.current.focus();
+			}, 50);
+		}
 	};
 
 	// update a note
 	const updateNote = (text) => {
-		// const lastUpdatedDate = new Date();
+		const lastUpdatedDate = new Date();
 		const editedNotes = [...notes];
 		const editedNote = {
 			...notes[selectedNoteIndex],
 			text,
-			lastUpdatedDate: new Date(),
-			// tags: notes[selectedNoteIndex].tags,
+			lastUpdatedDate,
 		};
 		editedNotes[selectedNoteIndex] = editedNote;
 
 		setNotes(editedNotes);
+		setWasEdited(true);
+		setIsUpdating(true);
 	};
 
 	// delete a note
-	const deleteNote = async (id) => {
-		await deleteNoteAPIMethod(id, (response) => {
-			console.log(response);
-		});
-		setIsEditing(false);
-		getNotesAPIMethod().then((response) => {
-			if (notes.length == 0) {
-				// setSelectedNoteIndex('');
-				setSelectedNoteIndex(-1);
-			} else {
-				setSelectedNoteIndex(notes[notes.length - 1].id);
-			}
-			setNotes(response);
-		});
+	const deleteNote = async () => {
+		const id = notes[selectedNoteIndex]._id;
+		await deleteNoteAPIMethod(id);
+		// when get notes
+		const fetchedNotes = await getNotesAPIMethod();
+
+		if (fetchedNotes.length === 0) {
+			setSelectedNoteIndex(-1);
+		} else {
+			setSelectedNoteIndex(0);
+		}
+
+		if (selectedNoteIndex !== -1) {
+			setTimeout(() => {
+				noteContentRef.current.focus();
+			}, 50);
+		}
+
+		setNotes(
+			fetchedNotes.map((note) => {
+				return {
+					...note,
+					lastUpdatedDate: new Date(note.lastUpdatedDate),
+				};
+			})
+		);
 	};
 
 	// search notes
@@ -192,9 +216,10 @@ function App() {
 	// 	console.log(notes);
 	// 	setNotes(searchedNotes);
 	// };
-	const searchNotes = (text) => {
-		setSearchInput(text);
-	};
+
+	// const searchNotes = (text) => {
+	// 	setSearchInput(text);
+	// };
 
 	const handleProfileName = (text) => {
 		const newProfile = {
@@ -219,26 +244,25 @@ function App() {
 	};
 
 	const handleTagDelete = (i) => {
-		setIsEditing(true);
 		const modifiedTags = [...notes[selectedNoteIndex].tags];
 		modifiedTags.splice(i, 1);
 		const untaggedNotes = [...notes];
 		const untaggedNote = { ...notes[selectedNoteIndex], tags: modifiedTags };
 		untaggedNotes[selectedNoteIndex] = untaggedNote;
 		setNotes(untaggedNotes);
+		setIsUpdating(true);
 	};
 
 	const handleTagAdd = (newTag) => {
-		setIsEditing(true);
 		const newTags = [...notes[selectedNoteIndex].tags, newTag];
 		const taggedNotes = [...notes];
 		const taggedNote = { ...notes[selectedNoteIndex], tags: newTags };
 		taggedNotes[selectedNoteIndex] = taggedNote;
 		setNotes(taggedNotes);
+		setIsUpdating(true);
 	};
 
 	const handleTagDrag = (tag, currPos, newPos) => {
-		setIsEditing(true);
 		const newTags = notes[selectedNoteIndex].tags.slice();
 
 		newTags.splice(currPos, 1);
@@ -249,6 +273,7 @@ function App() {
 		taggedNotes[selectedNoteIndex] = taggedNote;
 
 		setNotes(taggedNotes);
+		setIsUpdating(true);
 	};
 
 	const handleTagClick = (index) => {
@@ -301,14 +326,9 @@ function App() {
 					/>
 					<SidebarContent
 						notes={notes}
-						selectedNoteId={selectedNoteId}
-						stateSetSelectedNoteId={setSelectedNoteId}
-						setNoteContentDisabled={setIsNoteDisabled}
+						setSelectedNoteIndex={setSelectedNoteIndex}
 						noteContentRef={noteContentRef}
 						setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
-						searchInput={searchInput}
-						setSearchInput={setSearchInput}
-						searchNotes={searchNotes}
 					/>
 				</div>
 			)}
@@ -316,18 +336,16 @@ function App() {
 			{(!isNarrowScreen || !isSidebarWhenNarrowScreen) && (
 				<div className="editor-window">
 					<EditorWindowNav
-						notes={notes}
 						handleDeleteNote={deleteNote}
-						selectedNoteId={selectedNoteId}
 						handleBackArrowClick={handleBackArrowClick}
 						isNarrowScreen={isNarrowScreen}
+						selectedNoteIndex={selectedNoteIndex}
 					/>
 					<EditorWindowContent
 						notes={notes}
 						updateNote={updateNote}
 						selectedNoteIndex={selectedNoteIndex}
-						setIsEditing={setIsEditing}
-						disabled={isNoteDisabled}
+						disabled={selectedNoteIndex === -1}
 						noteContentRef={noteContentRef}
 						tags={
 							selectedNoteIndex !== -1 ? notes[selectedNoteIndex]?.tags : []
@@ -336,6 +354,8 @@ function App() {
 						handleAddition={handleTagAdd}
 						handleDrag={handleTagDrag}
 						handleTagClick={handleTagClick}
+						setSelectedNoteIndex={setSelectedNoteIndex}
+						selectedNoteId={selectedNoteId}
 					/>
 				</div>
 			)}

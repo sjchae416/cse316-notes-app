@@ -35,7 +35,7 @@ export const getNoteByIdAPIMethod = (noteId) => {
 
 // update a note
 export const updateNoteAPIMethod = (note) => {
-	return fetch(`/api/notes/${note.id}`, {
+	return fetch(`/api/notes/${note._id}`, {
 		...defaultHeaders,
 		method: 'PUT',
 		body: JSON.stringify(note),
@@ -47,6 +47,55 @@ export const updateNoteAPIMethod = (note) => {
 // delete a note
 export const deleteNoteAPIMethod = (noteId) => {
 	return fetch(`/api/notes/${noteId}`, {
+		...defaultHeaders,
+		method: 'DELETE',
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+// get user
+export const getUserAPIMethod = () => {
+	return fetch(`/api/users`, {
+		...defaultHeaders,
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+// create new user
+export const createUserAPIMethod = (user) => {
+	return fetch('/api/users', {
+		...defaultHeaders,
+		method: 'POST',
+		body: JSON.stringify(user),
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+export const getUserByIdAPIMethod = (userId) => {
+	return fetch(`/api/users/${userId}`, {
+		...defaultHeaders,
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+// update a user
+export const updateUserAPIMethod = (user) => {
+	return fetch(`/api/users/${user._id}`, {
+		...defaultHeaders,
+		method: 'PUT',
+		body: JSON.stringify(user),
+	})
+		.then(checkStatus)
+		.then();
+};
+
+// delete a user
+export const deleteUserAPIMethod = (userId) => {
+	return fetch(`/api/users/${userId}`, {
 		...defaultHeaders,
 		method: 'DELETE',
 	})

@@ -1,29 +1,24 @@
 import Note from './Note';
+import { getIdToIndex } from '../utils';
 
 const NotesList = ({
 	notes,
-	selectedNoteId,
-	stateSetSelectedNoteId,
-	setNoteContentDisabled,
+	setSelectedNoteIndex,
 	noteContentRef,
 	setIsSidebarWhenNarrowScreen,
 }) => {
 	return (
 		<div className="notes-list">
 			{notes
-				.slice(0)
-				.reverse()
-				.map((note) => {
+				.sort((note1, note2) => note2.lastUpdatedDate - note1.lastUpdatedDate)
+				.map((note, idx) => {
 					return (
-            <Note
-              note={note}
-							key={note.id}
-							id={note.id}
+						<Note
+							key={`note-${idx}`}
+							index={getIdToIndex(notes, note._id)}
 							text={note.text}
-							date={note.lastUpdatedDate}
-							selectedNoteId={selectedNoteId}
-							stateSetSelectedNoteId={stateSetSelectedNoteId}
-							setNoteContentDisabled={setNoteContentDisabled}
+							lastUpdatedDate={note.lastUpdatedDate}
+							setSelectedNoteIndex={setSelectedNoteIndex}
 							noteContentRef={noteContentRef}
 							setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
 						/>

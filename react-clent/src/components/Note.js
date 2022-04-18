@@ -1,36 +1,24 @@
+import { convertDateToString } from '../utils';
 const Note = ({
-	id,
+	index,
 	text,
-	date,
-	selectedNoteId,
+	lastUpdatedDate,
+	setSelectedNoteIndex,
 	setIsSidebarWhenNarrowScreen,
-	setNoteContentDisabled,
-	stateSetSelectedNoteId,
 	noteContentRef,
 }) => {
-	// let className = 'note';
-
-	const handleNoteClick = (id) => {
+	const handleNoteClick = () => {
 		setIsSidebarWhenNarrowScreen(false);
-		setNoteContentDisabled(false);
-		stateSetSelectedNoteId(id);
+		setSelectedNoteIndex(index);
 		setTimeout(() => {
 			noteContentRef.current.focus();
 		}, 50);
-		// if (this.props.isActive) {
-		// 	className += 'active';
-		// }
 	};
 
 	return (
-		<div
-			onClick={() => {
-				handleNoteClick(id);
-			}}
-			className="note"
-		>
+		<div onClick={handleNoteClick} className="note">
 			<div className="preview">{text || 'New Note'}</div>
-			<div className="date">{date}</div>
+			<div className="date">{convertDateToString(lastUpdatedDate)}</div>
 		</div>
 	);
 };

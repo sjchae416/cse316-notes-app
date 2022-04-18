@@ -9,6 +9,7 @@ const note = require('./models/note');
 const app = express();
 app.use(cors({ origin: 'http://localhost:3000', optionsSuccessStatus: 200 }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
 
 //Set up mongoose connection
 // var mongoDB = 'mongodb://localhost:27017/Notes'; // insert your database URL here
@@ -23,17 +24,11 @@ app.get('/api/notes', async function (req, res) {
 	// console.log(req.body);
 	const notes = await Note.find({});
 	const modifiedNotes = notes.map((mappedNote) => {
-		const notesFormat_id = mappedNote.toObject();
-		const notesFormatid = {
-			id: notesFormat_id._id,
-			...notesFormat_id,
-		};
-		delete notesFormatid['_id'];
-		return notesFormatid;
+		return mappedNote.toObject();
 	});
 	// res.json(notes);
 	console.log('🚀 ~ file: app.js ~ line 38 ~ modifiedNotes', modifiedNotes);
-	res.json(modifiedNotes);
+	res.json(modifiedNotes.reverse());
 	// console.log(notes);
 });
 
@@ -42,7 +37,7 @@ app.post('/api/notes', async function (req, res) {
 	console.log('Posted with body: ' + JSON.stringify(req.body));
 	const newNote = new Note({
 		text: req.body.text,
-		lastUpdatedDate: req.body.date,
+		lastUpdatedDate: req.body.lastUpdatedDate,
 		tags: req.body.tags,
 	});
 	await newNote.save();
@@ -58,7 +53,7 @@ app.put('/api/notes/:id', async function (req, res) {
 		id,
 		{
 			text: req.body.text,
-			lastUpdatedDate: req.body.date,
+			lastUpdatedDate: req.body.lastUpdatedDate,
 			tags: req.body.tags,
 		},
 		function (err, result) {
@@ -82,10 +77,10 @@ app.delete('/api/notes/:id', async function (req, res) {
 	res.json(afterDelete);
 });
 
-// get all users
+// get user
 app.get('/api/users', async function (req, res) {
 	const users = await User.find({});
-	const modifiedUsers = users.map((mappedNote) => {
+	const modifiedUser = users.map((mappedNote) => {
 		const usersFormat_id = mappedNote.toObject();
 		const usersFormatid = {
 			id: usersFormat_id._id,
@@ -94,7 +89,46 @@ app.get('/api/users', async function (req, res) {
 		delete usersFormatid['_id'];
 		return usersFormatid;
 	});
-	res.json(modifiedUsers);
+	res.json(modifiedUser);
+});
+
+// create new note
+app.post('/api/users', async function (req, res) {
+	const newNote = new Note({
+		name: req.body.text,
+		email: req.body.email,
+		colorScheme: req.body.colorScheme,
+	});
+	await newNote.save();
+	res.json(newNote);
+});
+
+// update a user
+app.put('/api/notes/:id', async function (req, res) {
+	let id = req.params.id;
+	Note.findByIdAndUpdate(
+		id,
+		{
+			name: req.body.text,
+			email: req.body.email,
+			colorScheme: req.body.colorScheme,
+		},
+		function (err, result) {
+			if (err) {
+				console.log('ERROR: ' + err);
+				res.send(err);
+			} else {
+				res.sendStatus(204);
+			}
+		}
+	);
+});
+
+// delete a user
+app.delete('/api/users/:id', async function (req, res) {
+	let id = req.params.id;
+	const afterDelete = await note.findByIdAndDelete(id);
+	res.json(afterDelete);
 });
 
 port = process.env.PORT || 5000;

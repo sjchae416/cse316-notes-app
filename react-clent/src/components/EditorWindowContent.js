@@ -4,7 +4,6 @@ function EditorWindowContent({
 	notes,
 	selectedNoteIndex,
 	updateNote,
-	setIsEditing,
 	disabled,
 	noteContentRef,
 	tags,
@@ -12,11 +11,10 @@ function EditorWindowContent({
 	handleAddition,
 	handleDrag,
 	handleTagClick,
+	selectedNoteId,
 }) {
 	const handleChange = (event) => {
-		setIsEditing(true);
 		updateNote(event.target.value);
-		// setIsEditing(false);
 	};
 
 	return (

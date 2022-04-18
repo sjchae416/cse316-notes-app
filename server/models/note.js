@@ -6,7 +6,12 @@ var NoteSchema = new Schema(
 	{
 		text: { type: String },
 		lastUpdatedDate: { type: Date, required: true },
-		tags: [{ text: { type: String, required: true } }],
+		tags: [
+			{
+				text: { type: String, required: true },
+				id: { type: String, required: true },
+			},
+		],
 	},
 	{ versionKey: false }
 );
