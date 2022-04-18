@@ -2,11 +2,14 @@ const Note = ({
 	id,
 	text,
 	date,
+	selectedNoteId,
 	setIsSidebarWhenNarrowScreen,
 	setNoteContentDisabled,
 	stateSetSelectedNoteId,
 	noteContentRef,
 }) => {
+	// let className = 'note';
+
 	const handleNoteClick = (id) => {
 		setIsSidebarWhenNarrowScreen(false);
 		setNoteContentDisabled(false);
@@ -14,6 +17,9 @@ const Note = ({
 		setTimeout(() => {
 			noteContentRef.current.focus();
 		}, 50);
+		// if (this.props.isActive) {
+		// 	className += 'active';
+		// }
 	};
 
 	return (

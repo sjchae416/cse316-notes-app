@@ -20,7 +20,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // get all notes
 app.get('/api/notes', async function (req, res) {
-	//  res.send('display notes here')
+	// console.log(req.body);
 	const notes = await Note.find({});
 	const modifiedNotes = notes.map((mappedNote) => {
 		const notesFormat_id = mappedNote.toObject();
@@ -80,6 +80,21 @@ app.delete('/api/notes/:id', async function (req, res) {
 	console.log(id);
 	const afterDelete = await note.findByIdAndDelete(id);
 	res.json(afterDelete);
+});
+
+// get all users
+app.get('/api/users', async function (req, res) {
+	const users = await User.find({});
+	const modifiedUsers = users.map((mappedNote) => {
+		const usersFormat_id = mappedNote.toObject();
+		const usersFormatid = {
+			id: usersFormat_id._id,
+			...usersFormat_id,
+		};
+		delete usersFormatid['_id'];
+		return usersFormatid;
+	});
+	res.json(modifiedUsers);
 });
 
 port = process.env.PORT || 5000;

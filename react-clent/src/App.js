@@ -1,9 +1,9 @@
 // 1. 노트 추가 시 500 에러
 // 2. 노트 삭제 시 db에서 지워지지만 front에서 새로고침을 해야함
-// 3. tag 인식 못함(노트에 추가 안한듯) 서치 기능 만들고 이래짐
-// 4. 프로필 화면 입력칸을 눌러도 화면 꺼짐
-// 5. 검색 기능 필터링
+// 3. tag 인식 못함(노트에 추가 안한듯) failed prop type
+// 5. 첫 검색 성공 후 지울 때 인식 못함
 // 6. 프로필 정보 저장 및 불러오기
+// 8. 화면 줄어들고 노트 수정하고 다시 돌아가면 에러
 // 7. 노트 선택 시 색깔 주기
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -22,13 +22,15 @@ import useDebounce from './hooks/useDebounce';
 
 function App() {
 	const [notes, setNotes] = useState([]);
+	console.log('🚀 ~ file: App.js ~ line 25 ~ App ~ notes', notes);
+
 	const [profile, setProfile] = useState({
 		name: '',
 		email: '',
 		colorScheme: '',
 	});
-	const [selectedNoteId, setSelectedNoteId] = useState('');
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
+	const [selectedNoteId, setSelectedNoteId] = useState('');
 	const [searchInput, setSearchInput] = useState('');
 	const [isEditing, setIsEditing] = useState(false);
 	const [isNoteDisabled, setIsNoteDisabled] = useState(false);
@@ -45,12 +47,15 @@ function App() {
 		1000
 	);
 
-	useEffect(() => {
-		// actual update
-		if (selectedNoteIndex !== -1) {
-			updateNoteAPIMethod(notes[selectedNoteIndex]);
-		}
-	}, [debounceUpdating]);
+	const profileContainerRef = useRef(null);
+	const profileCloseButtonRef = useRef(null);
+
+	// useEffect(() => {
+	// 	// actual update
+	// 	if (selectedNoteIndex !== -1) {
+	// 		updateNoteAPIMethod(notes[selectedNoteIndex]);
+	// 	}
+	// }, [debounceUpdating]);
 
 	useEffect(() => {
 		// same as componentDidMount
@@ -112,11 +117,23 @@ function App() {
 			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ selectedNoteIndex',
 			selectedNoteIndex
 		);
-		console.log(
-			'🚀 ~ file: App.js ~ line 131 ~ useEffect ~ selectedNoteId',
-			selectedNoteId
-		);
 	}, [selectedNoteIndex]);
+
+	useEffect(() => {
+		const notesCopy = [...notes];
+		if (searchInput === '') {
+			setNotes(notesCopy);
+		} else {
+			const searchedNotes = [...notes].filter((obj) =>
+				Object.values(obj).some((val) => val.includes(searchInput))
+			);
+			console.log(
+				'🚀 ~ file: App.js ~ line 124 ~ useEffect ~ searchInput',
+				searchInput
+			);
+			setNotes(searchedNotes);
+		}
+	}, [searchInput]);
 
 	// create new note
 	const addNote = async () => {
@@ -166,12 +183,17 @@ function App() {
 	};
 
 	// search notes
+	// const searchNotes = (text) => {
+	// 	setSearchInput(text);
+	// 	console.log('🚀 ~ file: App.js ~ line 162 ~ searchNotes ~ text', text);
+	// 	const searchedNotes = [...notes].filter((obj) =>
+	// 		Object.values(obj).some((val) => val.includes(text))
+	// 	);
+	// 	console.log(notes);
+	// 	setNotes(searchedNotes);
+	// };
 	const searchNotes = (text) => {
 		setSearchInput(text);
-		console.log('🚀 ~ file: App.js ~ line 162 ~ searchNotes ~ text', text);
-		const searchedNotes = [...notes].filter((note) => note.text === text);
-		console.log(notes);
-		// setNotes(searchedNotes);
 	};
 
 	const handleProfileName = (text) => {
@@ -245,12 +267,28 @@ function App() {
 		e.stopPropagation();
 		setIsProfileModalOpen(true);
 	};
-	const closeProfileModal = () => {
+	const closeProfileModal = (e) => {
 		setIsProfileModalOpen(false);
 	};
 
+	const judgeIsProfileContainer = (e) => {
+		const pcr = profileContainerRef.current;
+		let target = e.target;
+		while (pcr !== target) {
+			if (e.target === profileCloseButtonRef.current) {
+				return;
+			}
+			target = target.parentElement;
+			if (target === document.body) {
+				setIsProfileModalOpen(false);
+				return;
+			}
+		}
+		setIsProfileModalOpen(true);
+	};
+
 	return (
-		<div className="container" onClick={closeProfileModal}>
+		<div className="container" onClick={judgeIsProfileContainer}>
 			{((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
 				<div
 					className="sidebar"
@@ -309,8 +347,7 @@ function App() {
 					display: isProfileModalOpen ? 'block' : 'none',
 				}}
 				className="profile-page"
-				// ref={profileContainerRef}
-				// onBlur={closeProfileModal}
+				ref={profileContainerRef}
 			>
 				<ProfilePage
 					handleProfileName={handleProfileName}
@@ -320,6 +357,7 @@ function App() {
 					profile={profile}
 					handleClose={closeProfileModal}
 					isNarrowScreen={isNarrowScreen}
+					closeButtonRef={profileCloseButtonRef}
 				/>
 			</div>
 		</div>

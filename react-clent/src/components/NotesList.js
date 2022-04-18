@@ -15,7 +15,8 @@ const NotesList = ({
 				.reverse()
 				.map((note) => {
 					return (
-						<Note
+            <Note
+              note={note}
 							key={note.id}
 							id={note.id}
 							text={note.text}
