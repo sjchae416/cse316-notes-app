@@ -1,6 +1,6 @@
 // 1. 노트 추가 시 500 에러
-// 2. 노트 삭제 시 db에서 지워지기는 하나 front 에서 새로고침을 해야함
-// 3. tag 인식 못함(노트에 추가 안한듯)
+// 2. 노트 삭제 시 db에서 지워지지만 front에서 새로고침을 해야함
+// 3. tag 인식 못함(노트에 추가 안한듯) 서치 기능 만들고 이래짐
 // 4. 프로필 화면 입력칸을 눌러도 화면 꺼짐
 // 5. 검색 기능 필터링
 // 6. 프로필 정보 저장 및 불러오기
@@ -141,6 +141,7 @@ function App() {
 			...notes[selectedNoteIndex],
 			text,
 			lastUpdatedDate: new Date(),
+			// tags: notes[selectedNoteIndex].tags,
 		};
 		editedNotes[selectedNoteIndex] = editedNote;
 
@@ -170,7 +171,7 @@ function App() {
 		console.log('🚀 ~ file: App.js ~ line 162 ~ searchNotes ~ text', text);
 		const searchedNotes = [...notes].filter((note) => note.text === text);
 		console.log(notes);
-		setNotes(searchedNotes);
+		// setNotes(searchedNotes);
 	};
 
 	const handleProfileName = (text) => {
