@@ -14,6 +14,7 @@ function SidebarContent(props) {
 					type="text"
 					placeholder="Search all notes"
 					onChange={handleSearch}
+					ref={props.searchBarInputRef}
 				/>
 			</div>
 			<NotesList {...props} />

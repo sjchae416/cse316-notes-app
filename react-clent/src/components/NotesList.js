@@ -3,13 +3,15 @@ import { getIdToIndex } from '../utils';
 
 const NotesList = ({
 	notes,
+	selectedNoteIndex,
 	setSelectedNoteIndex,
 	noteContentRef,
 	setIsSidebarWhenNarrowScreen,
+	searchedNotes,
 }) => {
 	return (
 		<div className="notes-list">
-			{notes
+			{(searchedNotes ?? notes)
 				.sort((note1, note2) => note2.lastUpdatedDate - note1.lastUpdatedDate)
 				.map((note, idx) => {
 					return (
@@ -21,6 +23,7 @@ const NotesList = ({
 							setSelectedNoteIndex={setSelectedNoteIndex}
 							noteContentRef={noteContentRef}
 							setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
+							isSelected={idx === selectedNoteIndex}
 						/>
 					);
 				})}

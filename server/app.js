@@ -79,23 +79,15 @@ app.delete('/api/notes/:id', async function (req, res) {
 
 // get user
 app.get('/api/users', async function (req, res) {
-	const users = await User.find({});
-	const modifiedUser = users.map((mappedNote) => {
-		const usersFormat_id = mappedNote.toObject();
-		const usersFormatid = {
-			id: usersFormat_id._id,
-			...usersFormat_id,
-		};
-		delete usersFormatid['_id'];
-		return usersFormatid;
-	});
-	res.json(modifiedUser);
+	const users = await User.findOne({});
+
+	res.json(users);
 });
 
-// create new note
+// create new user
 app.post('/api/users', async function (req, res) {
 	const newNote = new Note({
-		name: req.body.text,
+		name: req.body.name,
 		email: req.body.email,
 		colorScheme: req.body.colorScheme,
 	});
@@ -104,12 +96,13 @@ app.post('/api/users', async function (req, res) {
 });
 
 // update a user
-app.put('/api/notes/:id', async function (req, res) {
-	let id = req.params.id;
-	Note.findByIdAndUpdate(
+app.put('/api/users/:id', async function (req, res) {
+	const id = req.params.id;
+	console.log(req.body);
+	User.findByIdAndUpdate(
 		id,
 		{
-			name: req.body.text,
+			name: req.body.name,
 			email: req.body.email,
 			colorScheme: req.body.colorScheme,
 		},

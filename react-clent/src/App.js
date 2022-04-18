@@ -1,8 +1,3 @@
-// 1. 첫 검색 성공 후 지울 때 인식 못함
-// 2. 프로필 정보 저장 및 불러오기
-// 3. 화면 줄어들고 노트 수정하고 다시 돌아가면 에러
-// 4. 노트 선택 시 색깔 주기
-
 import React, { useState, useEffect, useRef } from 'react';
 import SidebarNav from './components/SidebarNav';
 import SidebarContent from './components/SidebarContent';
@@ -14,11 +9,14 @@ import {
 	deleteNoteAPIMethod,
 	getNotesAPIMethod,
 	updateNoteAPIMethod,
+	getUserAPIMethod,
+	updateUserAPIMethod,
 } from './api/client';
 import useDebounce from './hooks/useDebounce';
 
 function App() {
 	const [notes, setNotes] = useState([]);
+	const [profile, setProfile] = useState({});
 
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
 
@@ -36,14 +34,12 @@ function App() {
 	const [wasEdited, setWasEdited] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	const [profile, setProfile] = useState({
-		name: '',
-		email: '',
-		colorScheme: '',
-	});
+	const [searchedNotes, setSearchedNotes] = useState(undefined);
 
 	const profileContainerRef = useRef(null);
 	const profileCloseButtonRef = useRef(null);
+	const searchBarInputRef = useRef(null);
+	const saveButtonRef = useRef(null);
 
 	// fetching Notes Data
 	useEffect(() => {
@@ -57,6 +53,9 @@ function App() {
 				};
 			});
 			setNotes(willBeMountedNotes);
+
+			const profileData = await getUserAPIMethod();
+			setProfile(profileData);
 		};
 
 		fetchData();
@@ -113,18 +112,17 @@ function App() {
 	// },[notes])
 
 	useEffect(() => {
-		const notesCopy = [...notes];
 		if (searchInput === '') {
-			setNotes(notesCopy);
+			setSearchedNotes(undefined);
 		} else {
-			const searchedNotes = [...notes].filter((obj) =>
-				Object.values(obj).some((val) => val.includes(searchInput))
-			);
+			const searched = [...notes].filter((obj) => {
+				return obj.text.includes(searchInput);
+			});
 			console.log(
 				'🚀 ~ file: App.js ~ line 124 ~ useEffect ~ searchInput',
 				searchInput
 			);
-			setNotes(searchedNotes);
+			setSearchedNotes(searched);
 		}
 	}, [searchInput]);
 
@@ -135,6 +133,9 @@ function App() {
 	// create new note
 	const addNote = async () => {
 		setSearchInput('');
+		if (searchBarInputRef?.current) {
+			searchBarInputRef.current.value = '';
+		}
 
 		const now = new Date();
 		const newNote = {
@@ -217,9 +218,9 @@ function App() {
 	// 	setNotes(searchedNotes);
 	// };
 
-	// const searchNotes = (text) => {
-	// 	setSearchInput(text);
-	// };
+	const searchNotes = (text) => {
+		setSearchInput(text);
+	};
 
 	const handleProfileName = (text) => {
 		const newProfile = {
@@ -284,8 +285,11 @@ function App() {
 		setIsSidebarWhenNarrowScreen(true);
 	};
 
-	const handleSaveClick = (e) => {
+	const handleSaveClick = async (e) => {
 		e.preventDefault();
+		console.log(profile);
+		await updateUserAPIMethod(profile);
+		closeProfileModal();
 	};
 
 	const openProfileModal = (e) => {
@@ -301,6 +305,9 @@ function App() {
 		let target = e.target;
 		while (pcr !== target) {
 			if (e.target === profileCloseButtonRef.current) {
+				return;
+			}
+			if (e.target === saveButtonRef.current) {
 				return;
 			}
 			target = target.parentElement;
@@ -329,6 +336,10 @@ function App() {
 						setSelectedNoteIndex={setSelectedNoteIndex}
 						noteContentRef={noteContentRef}
 						setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
+						searchNotes={searchNotes}
+						searchedNotes={searchedNotes}
+						searchBarInputRef={searchBarInputRef}
+						selectedNoteIndex={selectedNoteIndex}
 					/>
 				</div>
 			)}
@@ -378,6 +389,7 @@ function App() {
 					handleClose={closeProfileModal}
 					isNarrowScreen={isNarrowScreen}
 					closeButtonRef={profileCloseButtonRef}
+					saveButtonRef={saveButtonRef}
 				/>
 			</div>
 		</div>

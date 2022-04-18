@@ -63,25 +63,6 @@ export const getUserAPIMethod = () => {
 		.then(parseJSON);
 };
 
-// create new user
-export const createUserAPIMethod = (user) => {
-	return fetch('/api/users', {
-		...defaultHeaders,
-		method: 'POST',
-		body: JSON.stringify(user),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
-export const getUserByIdAPIMethod = (userId) => {
-	return fetch(`/api/users/${userId}`, {
-		...defaultHeaders,
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
 // update a user
 export const updateUserAPIMethod = (user) => {
 	return fetch(`/api/users/${user._id}`, {
@@ -91,16 +72,6 @@ export const updateUserAPIMethod = (user) => {
 	})
 		.then(checkStatus)
 		.then();
-};
-
-// delete a user
-export const deleteUserAPIMethod = (userId) => {
-	return fetch(`/api/users/${userId}`, {
-		...defaultHeaders,
-		method: 'DELETE',
-	})
-		.then(checkStatus)
-		.then(parseJSON);
 };
 
 function checkStatus(response) {
