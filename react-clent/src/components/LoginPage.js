@@ -1,6 +1,24 @@
+import React, { useState } from 'react';
+import { loginUserAPIMethod } from '../api/client';
+
 function LoginPage() {
-	const testFunction = () => {
-		window.alert('This is a Login Page');
+	const [loginEmail, setLoginEmail] = useState('');
+	const [loginPassword, setLoginPassword] = useState('');
+
+	const onChangeEmail = (event) => {
+		console.log(event.target.value);
+		let loginEmail = event.target.value;
+		setLoginEmail(loginEmail);
+	};
+
+	const onChangePassword = (event) => {
+		console.log(event.target.value);
+		let loginPassword = event.target.value;
+		setLoginPassword(loginPassword);
+	};
+
+	const isUser = async () => {
+		await loginUserAPIMethod({ email: loginEmail, password: loginPassword });
 	};
 
 	return (
@@ -14,12 +32,18 @@ function LoginPage() {
 			<div id="login-overlay">
 				<div id="login-input">
 					<label>Email</label>
-					<input id="login-input-email" type="text" />
+					<input id="login-input-email" type="text" onChange={onChangeEmail} />
 					<label>Password</label>
-					<input id="login-input-password" type="type" />
+					<input
+						id="login-input-password"
+						type="type"
+						onChange={onChangePassword}
+					/>
 				</div>
 				<div className="btn-login-container">
-					<button id="btn-login">Log in</button>
+					<button id="btn-login" onClick={isUser}>
+						Log in
+					</button>
 				</div>
 				<div className="btn-create-container">
 					<button id="btn-create">Create New Account</button>

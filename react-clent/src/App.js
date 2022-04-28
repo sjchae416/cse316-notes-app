@@ -11,12 +11,16 @@ import {
 	updateNoteAPIMethod,
 	getUserAPIMethod,
 	updateUserAPIMethod,
+	registerUserAPIMethod,
 } from './api/client';
 import useDebounce from './hooks/useDebounce';
+import LoginPage from './components/LoginPage';
+import SignUpPage from './components/SingUpPage';
 
 function App() {
 	const [notes, setNotes] = useState([]);
 	const [profile, setProfile] = useState({});
+	const [user, setUser] = useState(null);
 
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
 
@@ -33,8 +37,10 @@ function App() {
 	const [selectedNoteId, setSelectedNoteId] = useState(-1);
 	const [wasEdited, setWasEdited] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
-
 	const [searchedNotes, setSearchedNotes] = useState(undefined);
+	// const [userName, setUserName] = useState('');
+	// const [userEmail, setUserEmail] = useState('');
+	// const [userPassword, setUserPassword] = useState('');
 
 	const profileContainerRef = useRef(null);
 	const profileCloseButtonRef = useRef(null);
@@ -319,6 +325,14 @@ function App() {
 		setIsProfileModalOpen(true);
 	};
 
+	// const handleRegister = async () => {
+	// 	await registerUserAPIMethod({
+	// 		name: userName,
+	// 		email: userEmail,
+	// 		password: userPassword,
+	// 	});
+	// };
+
 	return (
 		<div className="container" onClick={judgeIsProfileContainer}>
 			{((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
@@ -370,6 +384,7 @@ function App() {
 					/>
 				</div>
 			)}
+
 			<div
 				tabIndex="0"
 				style={{
@@ -392,6 +407,15 @@ function App() {
 					saveButtonRef={saveButtonRef}
 				/>
 			</div>
+			<LoginPage />
+			<SignUpPage
+				// user={user}
+				// setUser={setUser}
+				// setUserName={setUserName}
+				// setUserEmail={setUserEmail}
+				// setUserPassword={setUserPassword}
+				// handleRegister={handleRegister}
+			/>
 		</div>
 	);
 }

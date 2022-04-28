@@ -74,6 +74,36 @@ export const updateUserAPIMethod = (user) => {
 		.then();
 };
 
+export const registerUserAPIMethod = (user) => {
+	return fetch('/api/users', {
+		...defaultHeaders,
+		method: 'POST',
+		body: JSON.stringify(user),
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+export const loginUserAPIMethod = (user) => {
+	return fetch('/api/users', {
+		...defaultHeaders,
+		method: 'POST',
+		body: JSON.stringify(user),
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+export const logoutUserAPIMethod = (user) => {
+	return fetch('/api/users', {
+		...defaultHeaders,
+		method: 'POST',
+		body: JSON.stringify(user),
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
 function checkStatus(response) {
 	if (response.status >= 200 && response.status < 300) {
 		return response;

@@ -1,6 +1,41 @@
+import React, { useState } from 'react';
+import { registerUserAPIMethod } from '../api/client';
+
 function SignUpPage() {
-	const testFunction = () => {
-		window.alert('This is a Login Page');
+	// user,
+	// setSignup,
+	// handleRegister,
+	// setSignupName,
+	// setSignupEmail,
+	// setSignupPassword
+	const [signupName, setSignupName] = useState('');
+	const [signupEmail, setSignupEmail] = useState('');
+	const [signupPassword, setSignupPassword] = useState('');
+
+	const onChangeName = (event) => {
+		console.log(event.target.value);
+		let signupName = event.target.value;
+		setSignupName(signupName);
+	};
+
+	const onChangeEmail = (event) => {
+		console.log(event.target.value);
+		let signupEmail = event.target.value;
+		setSignupEmail(signupEmail);
+	};
+
+	const onChangePassword = (event) => {
+		console.log(event.target.value);
+		let signupPassword = event.target.value;
+		setSignupPassword(signupPassword);
+	};
+
+	const handleRegister = async () => {
+		await registerUserAPIMethod({
+			name: signupName,
+			email: signupEmail,
+			password: signupPassword,
+		});
 	};
 
 	return (
@@ -11,14 +46,20 @@ function SignUpPage() {
 			</div>
 			<div id="signup-input">
 				<label>Name</label>
-				<input id="signup-input-name" type="text" />
-				<label>Emai</label>
-				<input id="signup-input-email" type="text" />
+				<input id="signup-input-name" type="text" onChange={onChangeName} />
+				<label>Email</label>
+				<input id="signup-input-email" type="text" onChange={onChangeEmail} />
 				<label>Password</label>
-				<input id="signup-input-password" type="text" />
+				<input
+					id="signup-input-password"
+					type="text"
+					onChange={onChangePassword}
+				/>
 			</div>
 			<div id="btn-singup-container">
-				<button id="btn-signup">Sign Up</button>
+				<button id="btn-signup" onClick={handleRegister}>
+					Sign Up
+				</button>
 			</div>
 		</div>
 	);
