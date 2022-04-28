@@ -12,6 +12,7 @@ var NoteSchema = new Schema(
 				id: { type: String, required: true },
 			},
 		],
+		agent: { type: Schema.Types.ObjectId, ref: 'User', required: false },
 	},
 	{ versionKey: false }
 );

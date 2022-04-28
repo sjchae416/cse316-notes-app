@@ -130,11 +130,11 @@ app.delete('/api/notes/:id', async function (req, res) {
 	res.json(afterDelete);
 });
 
-// get user
+// get a user
 app.get('/api/users', async function (req, res) {
-	const users = await User.findOne({ _id: req.session.userId });
-	console.log(users);
-	res.json(users);
+	const user = await User.findOne({ _id: req.session.userId });
+	console.log(user);
+	res.json(user);
 });
 
 // update a user
