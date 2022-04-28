@@ -19,7 +19,7 @@ import SignUpPage from './components/SingUpPage';
 
 function App() {
 	const [notes, setNotes] = useState([]);
-	const [profile, setProfile] = useState({});
+	const [profile, setProfile] = useState();
 	const [user, setUser] = useState(null);
 
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
@@ -51,21 +51,19 @@ function App() {
 	useEffect(() => {
 		// same as componentDidMount
 		const fetchData = async () => {
-			const data = await getNotesAPIMethod();
-			const willBeMountedNotes = data.map((note) => {
-				return {
-					...note,
-					lastUpdatedDate: new Date(note.lastUpdatedDate),
-				};
-			});
-			setNotes(willBeMountedNotes);
-
-			const profileData = await getUserAPIMethod();
-			setProfile(profileData);
+			if (profile) {
+				const data = await getNotesAPIMethod();
+				const willBeMountedNotes = data.map((note) => {
+					return {
+						...note,
+						lastUpdatedDate: new Date(note.lastUpdatedDate),
+					};
+				});
+				setNotes(willBeMountedNotes);
+			}
 		};
-
 		fetchData();
-	}, []);
+	}, [profile]);
 
 	// resizing windows
 	useEffect(() => {
@@ -395,26 +393,28 @@ function App() {
 				className="profile-page"
 				ref={profileContainerRef}
 			>
-				<ProfilePage
-					handleProfileName={handleProfileName}
-					handleProfileEmail={handleProfileEmail}
-					handleProfileColorScheme={handleProfileColorScheme}
-					handleSaveClick={handleSaveClick}
-					profile={profile}
-					handleClose={closeProfileModal}
-					isNarrowScreen={isNarrowScreen}
-					closeButtonRef={profileCloseButtonRef}
-					saveButtonRef={saveButtonRef}
-				/>
+				{profile && (
+					<ProfilePage
+						handleProfileName={handleProfileName}
+						handleProfileEmail={handleProfileEmail}
+						handleProfileColorScheme={handleProfileColorScheme}
+						handleSaveClick={handleSaveClick}
+						profile={profile}
+						handleClose={closeProfileModal}
+						isNarrowScreen={isNarrowScreen}
+						closeButtonRef={profileCloseButtonRef}
+						saveButtonRef={saveButtonRef}
+					/>
+				)}
 			</div>
-			<LoginPage />
+			<LoginPage setUser={setProfile} />
 			<SignUpPage
-				// user={user}
-				// setUser={setUser}
-				// setUserName={setUserName}
-				// setUserEmail={setUserEmail}
-				// setUserPassword={setUserPassword}
-				// handleRegister={handleRegister}
+			// user={user}
+			// setUser={setUser}
+			// setUserName={setUserName}
+			// setUserEmail={setUserEmail}
+			// setUserPassword={setUserPassword}
+			// handleRegister={handleRegister}
 			/>
 		</div>
 	);

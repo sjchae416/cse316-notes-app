@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { loginUserAPIMethod } from '../api/client';
+import { getUserAPIMethod, loginUserAPIMethod } from '../api/client';
 
-function LoginPage() {
+function LoginPage({ setUser }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 
@@ -17,8 +17,15 @@ function LoginPage() {
 		setLoginPassword(loginPassword);
 	};
 
-	const isUser = async () => {
-		await loginUserAPIMethod({ email: loginEmail, password: loginPassword });
+	const login = async () => {
+		try {
+			await loginUserAPIMethod({ email: loginEmail, password: loginPassword });
+			const user = await getUserAPIMethod();
+			console.log('user', user);
+			setUser(user);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	return (
@@ -41,7 +48,7 @@ function LoginPage() {
 					/>
 				</div>
 				<div className="btn-login-container">
-					<button id="btn-login" onClick={isUser}>
+					<button id="btn-login" onClick={login}>
 						Log in
 					</button>
 				</div>

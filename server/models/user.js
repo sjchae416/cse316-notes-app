@@ -17,7 +17,7 @@ var UserSchema = new Schema({
 	},
 	colorScheme: {
 		type: String,
-		// required: true,
+		default: 'Light', // required: true,
 	},
 	password: {
 		type: String,

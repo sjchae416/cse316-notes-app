@@ -132,20 +132,9 @@ app.delete('/api/notes/:id', async function (req, res) {
 
 // get user
 app.get('/api/users', async function (req, res) {
-	const users = await User.findOne({});
-
+	const users = await User.findOne({ _id: req.session.userId });
+	console.log(users);
 	res.json(users);
-});
-
-// create new user's profie
-app.post('/api/users', async function (req, res) {
-	const newNote = new Note({
-		name: req.body.name,
-		email: req.body.email,
-		colorScheme: req.body.colorScheme,
-	});
-	await newNote.save();
-	res.json(newNote);
 });
 
 // update a user

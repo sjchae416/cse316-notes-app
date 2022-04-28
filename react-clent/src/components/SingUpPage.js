@@ -31,11 +31,18 @@ function SignUpPage() {
 	};
 
 	const handleRegister = async () => {
-		await registerUserAPIMethod({
-			name: signupName,
-			email: signupEmail,
-			password: signupPassword,
-		});
+		try {
+			const newUser = await registerUserAPIMethod({
+				name: signupName,
+				email: signupEmail,
+				password: signupPassword,
+			});
+			console.log(newUser);
+			//TODO setProfile 해주고, profile 유무에 따라 로그인화면인지 아닌지 보여주기
+		} catch (e) {
+			console.log('signupfailed');
+			console.error(e);
+		}
 	};
 
 	return (

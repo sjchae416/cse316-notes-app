@@ -54,9 +54,18 @@ export const deleteNoteAPIMethod = (noteId) => {
 		.then(parseJSON);
 };
 
-// get user
+// get all user
 export const getUserAPIMethod = () => {
 	return fetch(`/api/users`, {
+		...defaultHeaders,
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
+// get a user bu id
+export const getUserByIdAPIMethod = (userId) => {
+	return fetch(`/api/users/${userId}`, {
 		...defaultHeaders,
 	})
 		.then(checkStatus)
@@ -75,7 +84,7 @@ export const updateUserAPIMethod = (user) => {
 };
 
 export const registerUserAPIMethod = (user) => {
-	return fetch('/api/users', {
+	return fetch('/api/register', {
 		...defaultHeaders,
 		method: 'POST',
 		body: JSON.stringify(user),
@@ -85,23 +94,19 @@ export const registerUserAPIMethod = (user) => {
 };
 
 export const loginUserAPIMethod = (user) => {
-	return fetch('/api/users', {
+	return fetch('/api/login', {
 		...defaultHeaders,
 		method: 'POST',
 		body: JSON.stringify(user),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+	}).then(checkStatus);
 };
 
 export const logoutUserAPIMethod = (user) => {
-	return fetch('/api/users', {
+	return fetch('/api/logout', {
 		...defaultHeaders,
 		method: 'POST',
 		body: JSON.stringify(user),
-	})
-		.then(checkStatus)
-		.then(parseJSON);
+	}).then(checkStatus);
 };
 
 function checkStatus(response) {
