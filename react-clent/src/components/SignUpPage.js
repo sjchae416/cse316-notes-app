@@ -1,41 +1,35 @@
 import React, { useState } from 'react';
-import { registerUserAPIMethod } from '../api/client';
+import { signUpUserAPIMethod } from '../api/client';
 
 function SignUpPage({ setUser }) {
-	// user,
-	// setSignup,
-	// handleRegister,
-	// setSignupName,
-	// setSignupEmail,
-	// setSignupPassword
-	const [signupName, setSignupName] = useState('');
-	const [signupEmail, setSignupEmail] = useState('');
-	const [signupPassword, setSignupPassword] = useState('');
+	const [signUpName, setSignUpName] = useState('');
+	const [signUpEmail, setSignUpEmail] = useState('');
+	const [signUpPassword, setSignUpPassword] = useState('');
 
 	const onChangeName = (event) => {
 		console.log(event.target.value);
-		let signupName = event.target.value;
-		setSignupName(signupName);
+		let signUpName = event.target.value;
+		setSignUpName(signUpName);
 	};
 
 	const onChangeEmail = (event) => {
 		console.log(event.target.value);
-		let signupEmail = event.target.value;
-		setSignupEmail(signupEmail);
+		let signUpEmail = event.target.value;
+		setSignUpEmail(signUpEmail);
 	};
 
 	const onChangePassword = (event) => {
 		console.log(event.target.value);
-		let signupPassword = event.target.value;
-		setSignupPassword(signupPassword);
+		let signUpPassword = event.target.value;
+		setSignUpPassword(signUpPassword);
 	};
 
-	const handleRegister = async () => {
+	const handleSignUp = async () => {
 		try {
-			const newUser = await registerUserAPIMethod({
-				name: signupName,
-				email: signupEmail,
-				password: signupPassword,
+			const newUser = await signUpUserAPIMethod({
+				name: signUpName,
+				email: signUpEmail,
+				password: signUpPassword,
 			});
 			setUser(newUser);
 		} catch (e) {
@@ -62,8 +56,8 @@ function SignUpPage({ setUser }) {
 					onChange={onChangePassword}
 				/>
 			</div>
-			<div id="btn-singup-container">
-				<button id="btn-signup" onClick={handleRegister}>
+			<div id="btn-sign-up-container">
+				<button id="btn-sign-up" onClick={handleSignUp}>
 					Sign Up
 				</button>
 			</div>

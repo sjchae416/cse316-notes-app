@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { getUserAPIMethod, loginUserAPIMethod } from '../api/client';
+import { loginUserAPIMethod } from '../api/client';
 
-function LoginPage({ setUser, setIsLogInPage }) {
+function LoginPage({ setUser, setIsLoginPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 
@@ -17,17 +17,12 @@ function LoginPage({ setUser, setIsLogInPage }) {
 		setLoginPassword(loginPassword);
 	};
 
-	const toSignUp = () => {
-		setIsLogInPage(false);
-	};
-
 	const login = async () => {
 		try {
 			const user = await loginUserAPIMethod({
 				email: loginEmail,
 				password: loginPassword,
 			});
-
 			console.log('user: ', user);
 			setUser(user);
 		} catch (e) {
@@ -35,12 +30,14 @@ function LoginPage({ setUser, setIsLogInPage }) {
 		}
 	};
 
+	const displaySignUpPage = () => {
+		setIsLoginPage(false);
+	};
+
 	return (
 		<div id="wrapper-login">
 			<div id="login-title">
 				<h1>Notes</h1>
-			</div>
-			<div id="login-slogan">
 				<h2>Organize all your thoughts in one place</h2>
 			</div>
 			<div id="login-overlay">
@@ -54,13 +51,13 @@ function LoginPage({ setUser, setIsLogInPage }) {
 						onChange={onChangePassword}
 					/>
 				</div>
-				<div className="btn-login-container">
+				<div id="error-msg">Error: Invalid email and/or password</div>
+				<div className="login-btn">
 					<button id="btn-login" onClick={login}>
 						Log in
 					</button>
-				</div>
-				<div className="btn-create-container">
-					<button onClick={toSignUp} id="btn-create">
+					<hr />
+					<button id="btn-sign-up" onClick={displaySignUpPage}>
 						Create New Account
 					</button>
 				</div>

@@ -1,3 +1,5 @@
+import { logoutUserAPIMethod } from '../api/client';
+
 const ProfilePage = ({
 	handleProfileName,
 	handleProfileEmail,
@@ -8,7 +10,17 @@ const ProfilePage = ({
 	closeButtonRef,
 	saveButtonRef,
 	isNarrowScreen,
+	setProfile,
 }) => {
+	const handleLogout = async () => {
+		console.log('user logged out');
+		await logoutUserAPIMethod({
+			profile,
+		});
+
+		setProfile(null);
+	};
+
 	return (
 		<form className="profile-form">
 			<div className="profile-nav">
@@ -89,7 +101,7 @@ const ProfilePage = ({
 					onClick={handleSaveClick}
 				/>
 				{/* <button className="button-save" onClick={handleSaveClick}>Save</button> */}
-				<button className="button-logout" type="button">
+				<button className="button-logout" type="button" onClick={handleLogout}>
 					Logout
 				</button>
 			</div>

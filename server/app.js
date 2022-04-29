@@ -72,7 +72,7 @@ app.use((err, req, res, next) => {
 	}
 });
 
-// get all notes
+// SECTION get all notes
 app.get('/api/notes', async function (req, res) {
 	// console.log(req.body);
 	const notes = await Note.find({ agent: req.session.userId });
@@ -85,7 +85,7 @@ app.get('/api/notes', async function (req, res) {
 	// console.log(notes);
 });
 
-// create new note
+// SECTION create new note
 app.post('/api/notes', async function (req, res) {
 	console.log('Posted with body: ' + JSON.stringify(req.body));
 	const newNote = new Note({
@@ -98,7 +98,7 @@ app.post('/api/notes', async function (req, res) {
 	res.json(newNote);
 });
 
-// update a note
+// SECTION update a note
 app.put('/api/notes/:id', async function (req, res) {
 	let id = req.params.id;
 	console.log('PUT with id: ' + id + ', body: ' + JSON.stringify(req.body));
@@ -115,15 +115,13 @@ app.put('/api/notes/:id', async function (req, res) {
 				console.log('ERROR: ' + err);
 				res.send(err);
 			} else {
-				// Status 204 represents success with no content
-				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
 				res.sendStatus(204);
 			}
 		}
 	);
 });
 
-// delete a note
+// SECTION delete a note
 app.delete('/api/notes/:id', async function (req, res) {
 	let id = req.params.id;
 	console.log(id);
@@ -131,14 +129,14 @@ app.delete('/api/notes/:id', async function (req, res) {
 	res.json(afterDelete);
 });
 
-// get a user
+// SECTION get a user
 app.get('/api/users/loggedInUser', async function (req, res) {
 	const user = await User.findOne({ _id: req.session.userId });
 	console.log(user);
 	res.json(user);
 });
 
-// get a user by userId
+// SECTION update a user
 app.put('/api/users/:id', async function (req, res) {
 	const id = req.params.id;
 	console.log(req.body);
@@ -160,39 +158,34 @@ app.put('/api/users/:id', async function (req, res) {
 	);
 });
 
-// update a user
-app.put('/api/users/:id', async function (req, res) {
-	const id = req.params.id;
-	console.log(req.body);
-	User.findByIdAndUpdate(
-		id,
-		{
-			name: req.body.name,
-			email: req.body.email,
-			colorScheme: req.body.colorScheme,
-		},
-		function (err, result) {
-			if (err) {
-				console.log('ERROR: ' + err);
-				res.send(err);
-			} else {
-				res.sendStatus(204);
-			}
-		}
-	);
-});
+// // update a user
+// app.put('/api/users/:id', async function (req, res) {
+// 	const id = req.params.id;
+// 	console.log(req.body);
+// 	User.findByIdAndUpdate(
+// 		id,
+// 		{
+// 			name: req.body.name,
+// 			email: req.body.email,
+// 			colorScheme: req.body.colorScheme,
+// 		},
+// 		function (err, result) {
+// 			if (err) {
+// 				console.log('ERROR: ' + err);
+// 				res.send(err);
+// 			} else {
+// 				res.sendStatus(204);
+// 			}
+// 		}
+// 	);
+// });
 
-// delete a user
-app.delete('/api/users/:id', async function (req, res) {
-	let id = req.params.id;
-	const afterDelete = await note.findByIdAndDelete(id);
-	res.json(afterDelete);
-});
-
-port = process.env.PORT || 5000;
-app.listen(port, () => {
-	console.log('server started!');
-});
+// // delete a user
+// app.delete('/api/users/:id', async function (req, res) {
+// 	let id = req.params.id;
+// 	const afterDelete = await note.findByIdAndDelete(id);
+// 	res.json(afterDelete);
+// });
 
 function wrapAsync(fn) {
 	return function (req, res, next) {
@@ -200,12 +193,12 @@ function wrapAsync(fn) {
 	};
 }
 
-// USER related
+// SECTION signup user
 app.post(
-	'/api/register',
+	'/api/signup',
 	wrapAsync(async function (req, res) {
-		const { password, email, name } = req.body;
-		const user = new User({ email, password, name });
+		const { name, email, password } = req.body;
+		const user = new User({ name, email, password });
 		await user.save();
 		req.session.userId = user._id;
 		console.log(user);
@@ -213,6 +206,7 @@ app.post(
 	})
 );
 
+// SECTION login user
 app.post(
 	'/api/login',
 	wrapAsync(async function (req, res) {
@@ -228,6 +222,7 @@ app.post(
 	})
 );
 
+// SECTION logout user
 app.post(
 	'/api/logout',
 	wrapAsync(async function (req, res) {
@@ -235,3 +230,8 @@ app.post(
 		res.sendStatus(204);
 	})
 );
+
+port = process.env.PORT || 5000;
+app.listen(port, () => {
+	console.log('server started!');
+});

@@ -15,16 +15,16 @@ var UserSchema = new Schema({
 		trim: true, // This will trim the whitespace automatically from the email before saving
 		unique: true,
 	},
-	colorScheme: {
-		type: String,
-		default: 'Light', // required: true,
-	},
 	password: {
 		type: String,
 	},
-	profile_url: {
+	profileImageUrl: {
 		type: String,
 		default: '',
+	},
+	colorScheme: {
+		type: String,
+		default: 'Light', // required: true,
 	},
 });
 

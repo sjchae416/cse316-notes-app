@@ -4,7 +4,7 @@ const defaultHeaders = {
 	},
 };
 
-// More on the fetch method: https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
+// SECTION get all notes
 // get all notes
 export const getNotesAPIMethod = () => {
 	return fetch(`/api/notes`, {
@@ -14,6 +14,7 @@ export const getNotesAPIMethod = () => {
 		.then(parseJSON);
 };
 
+// SECTION create new note
 // create new note
 export const createNoteAPIMethod = (note) => {
 	return fetch('/api/notes', {
@@ -25,14 +26,15 @@ export const createNoteAPIMethod = (note) => {
 		.then(parseJSON);
 };
 
-export const getNoteByIdAPIMethod = (noteId) => {
-	return fetch(`/api/notes/${noteId}`, {
-		...defaultHeaders,
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
+// export const getNoteByIdAPIMethod = (noteId) => {
+// 	return fetch(`/api/notes/${noteId}`, {
+// 		...defaultHeaders,
+// 	})
+// 		.then(checkStatus)
+// 		.then(parseJSON);
+// };
 
+// SECTION update a note
 // update a note
 export const updateNoteAPIMethod = (note) => {
 	return fetch(`/api/notes/${note._id}`, {
@@ -44,6 +46,7 @@ export const updateNoteAPIMethod = (note) => {
 		.then();
 };
 
+// SECTION delete a note
 // delete a note
 export const deleteNoteAPIMethod = (noteId) => {
 	return fetch(`/api/notes/${noteId}`, {
@@ -54,6 +57,7 @@ export const deleteNoteAPIMethod = (noteId) => {
 		.then(parseJSON);
 };
 
+// SECTION get a user
 // get a user bu id
 export const getUserByIdAPIMethod = () => {
 	return fetch(`/api/users/loggedInUser`, {
@@ -63,7 +67,7 @@ export const getUserByIdAPIMethod = () => {
 		.then(parseJSON);
 };
 
-// update a user
+// SECTION update a user
 export const updateUserAPIMethod = (user) => {
 	return fetch(`/api/users/${user._id}`, {
 		...defaultHeaders,
@@ -74,8 +78,9 @@ export const updateUserAPIMethod = (user) => {
 		.then();
 };
 
-export const registerUserAPIMethod = (user) => {
-	return fetch('/api/register', {
+// SECTION signup user
+export const signUpUserAPIMethod = (user) => {
+	return fetch('/api/signup', {
 		...defaultHeaders,
 		method: 'POST',
 		body: JSON.stringify(user),
@@ -84,6 +89,7 @@ export const registerUserAPIMethod = (user) => {
 		.then(parseJSON);
 };
 
+// SECTION login user
 export const loginUserAPIMethod = (user) => {
 	return fetch('/api/login', {
 		...defaultHeaders,
@@ -94,6 +100,7 @@ export const loginUserAPIMethod = (user) => {
 		.then(parseJSON);
 };
 
+// SECTION logout user
 export const logoutUserAPIMethod = (user) => {
 	return fetch('/api/logout', {
 		...defaultHeaders,

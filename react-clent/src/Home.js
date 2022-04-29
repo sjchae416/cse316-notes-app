@@ -9,28 +9,19 @@ import {
 	deleteNoteAPIMethod,
 	getNotesAPIMethod,
 	updateNoteAPIMethod,
-	getUserAPIMethod,
 	updateUserAPIMethod,
-	registerUserAPIMethod,
 } from './api/client';
 import useDebounce from './hooks/useDebounce';
-import LoginPage from './components/LoginPage';
-import SignUpPage from './components/SingUpPage';
 
 function Home({ profile, setProfile }) {
 	const [notes, setNotes] = useState([]);
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
+	const [selectedNoteId, setSelectedNoteId] = useState(-1);
 	const [searchInput, setSearchInput] = useState('');
-	const [isNarrowScreen, setIsNarrowScreen] = useState(
-		() => window.innerWidth <= 500
-	);
-	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
-		useState(false);
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 	const noteContentRef = useRef(null);
 	const [noteTextValue, setNoteTextValue] = useState('');
 	const debounceValue = useDebounce(noteTextValue, 1000);
-	const [selectedNoteId, setSelectedNoteId] = useState(-1);
 	const [wasEdited, setWasEdited] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
 	const [searchedNotes, setSearchedNotes] = useState(undefined);
@@ -38,6 +29,11 @@ function Home({ profile, setProfile }) {
 	const profileCloseButtonRef = useRef(null);
 	const searchBarInputRef = useRef(null);
 	const saveButtonRef = useRef(null);
+	const [isNarrowScreen, setIsNarrowScreen] = useState(
+		() => window.innerWidth <= 500
+	);
+	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
+		useState(false);
 
 	// fetching Notes Data
 	useEffect(() => {
@@ -225,6 +221,7 @@ function Home({ profile, setProfile }) {
 		};
 		setProfile(newProfile);
 	};
+
 	const handleProfileEmail = (text) => {
 		const newProfile = {
 			...profile,
@@ -232,6 +229,7 @@ function Home({ profile, setProfile }) {
 		};
 		setProfile(newProfile);
 	};
+
 	const handleProfileColorScheme = (text) => {
 		const newProfile = {
 			...profile,
@@ -316,7 +314,7 @@ function Home({ profile, setProfile }) {
 	};
 
 	// const handleRegister = async () => {
-	// 	await registerUserAPIMethod({
+	// 	await signUpUserAPIMethod({
 	// 		name: userName,
 	// 		email: userEmail,
 	// 		password: userPassword,
@@ -391,11 +389,12 @@ function Home({ profile, setProfile }) {
 						handleProfileEmail={handleProfileEmail}
 						handleProfileColorScheme={handleProfileColorScheme}
 						handleSaveClick={handleSaveClick}
-						profile={profile}
 						handleClose={closeProfileModal}
 						isNarrowScreen={isNarrowScreen}
 						closeButtonRef={profileCloseButtonRef}
 						saveButtonRef={saveButtonRef}
+						profile={profile}
+						setProfile={setProfile}
 					/>
 				)}
 			</div>
