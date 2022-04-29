@@ -5,12 +5,13 @@ const ProfilePage = ({
 	handleProfileEmail,
 	handleProfileColorScheme,
 	handleSaveClick,
-	profile,
 	handleClose,
 	closeButtonRef,
 	saveButtonRef,
 	isNarrowScreen,
+	profile,
 	setProfile,
+	setIsLoginPage,
 }) => {
 	const handleLogout = async () => {
 		console.log('user logged out');
@@ -19,6 +20,7 @@ const ProfilePage = ({
 		});
 
 		setProfile(null);
+		setIsLoginPage(true);
 	};
 
 	return (

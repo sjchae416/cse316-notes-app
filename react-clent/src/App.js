@@ -25,7 +25,11 @@ const App = () => {
 	return (
 		<>
 			{profile ? (
-				<Home profile={profile} setProfile={setProfile} />
+				<Home
+					profile={profile}
+					setProfile={setProfile}
+					setIsLoginPage={setIsLoginPage}
+				/>
 			) : isLogInPage ? (
 				<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
 			) : (

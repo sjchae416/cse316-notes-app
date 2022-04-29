@@ -4,7 +4,9 @@ import { signUpUserAPIMethod } from '../api/client';
 function SignUpPage({ setUser }) {
 	const [signUpName, setSignUpName] = useState('');
 	const [signUpEmail, setSignUpEmail] = useState('');
-	const [signUpPassword, setSignUpPassword] = useState('');
+  const [signUpPassword, setSignUpPassword] = useState('');
+  
+  console.log('SIGN UP PAGE');
 
 	const onChangeName = (event) => {
 		console.log(event.target.value);

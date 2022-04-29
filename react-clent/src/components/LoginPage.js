@@ -5,14 +5,14 @@ function LoginPage({ setUser, setIsLoginPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 
+	console.log('LOGIN PAGE');
+
 	const onChangeEmail = (event) => {
-		console.log(event.target.value);
 		let loginEmail = event.target.value;
 		setLoginEmail(loginEmail);
 	};
 
 	const onChangePassword = (event) => {
-		console.log(event.target.value);
 		let loginPassword = event.target.value;
 		setLoginPassword(loginPassword);
 	};

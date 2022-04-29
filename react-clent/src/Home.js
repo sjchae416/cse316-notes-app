@@ -13,7 +13,7 @@ import {
 } from './api/client';
 import useDebounce from './hooks/useDebounce';
 
-function Home({ profile, setProfile }) {
+function Home({ profile, setProfile, setIsLoginPage }) {
 	const [notes, setNotes] = useState([]);
 	const [selectedNoteIndex, setSelectedNoteIndex] = useState(-1);
 	const [selectedNoteId, setSelectedNoteId] = useState(-1);
@@ -34,6 +34,8 @@ function Home({ profile, setProfile }) {
 	);
 	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
 		useState(false);
+
+	console.log('HOME PAGE');
 
 	// fetching Notes Data
 	useEffect(() => {
@@ -395,6 +397,7 @@ function Home({ profile, setProfile }) {
 						saveButtonRef={saveButtonRef}
 						profile={profile}
 						setProfile={setProfile}
+						setIsLoginPage={setIsLoginPage}
 					/>
 				)}
 			</div>
