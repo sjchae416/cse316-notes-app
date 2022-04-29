@@ -75,7 +75,7 @@ app.use((err, req, res, next) => {
 // get all notes
 app.get('/api/notes', async function (req, res) {
 	// console.log(req.body);
-	const notes = await Note.find({});
+	const notes = await Note.find({ agent: req.session.userId });
 	const modifiedNotes = notes.map((mappedNote) => {
 		return mappedNote.toObject();
 	});
@@ -92,6 +92,7 @@ app.post('/api/notes', async function (req, res) {
 		text: req.body.text,
 		lastUpdatedDate: req.body.lastUpdatedDate,
 		tags: req.body.tags,
+		agent: req.session.userId,
 	});
 	await newNote.save();
 	res.json(newNote);
@@ -131,10 +132,32 @@ app.delete('/api/notes/:id', async function (req, res) {
 });
 
 // get a user
-app.get('/api/users', async function (req, res) {
+app.get('/api/users/loggedInUser', async function (req, res) {
 	const user = await User.findOne({ _id: req.session.userId });
 	console.log(user);
 	res.json(user);
+});
+
+// get a user by userId
+app.put('/api/users/:id', async function (req, res) {
+	const id = req.params.id;
+	console.log(req.body);
+	User.findByIdAndUpdate(
+		id,
+		{
+			name: req.body.name,
+			email: req.body.email,
+			colorScheme: req.body.colorScheme,
+		},
+		function (err, result) {
+			if (err) {
+				console.log('ERROR: ' + err);
+				res.send(err);
+			} else {
+				res.sendStatus(204);
+			}
+		}
+	);
 });
 
 // update a user
@@ -185,6 +208,7 @@ app.post(
 		const user = new User({ email, password, name });
 		await user.save();
 		req.session.userId = user._id;
+		console.log(user);
 		res.json(user);
 	})
 );
@@ -192,11 +216,12 @@ app.post(
 app.post(
 	'/api/login',
 	wrapAsync(async function (req, res) {
-		const { password, email } = req.body;
+		const { email, password } = req.body;
 		const user = await User.findAndValidate(email, password);
+		console.log(user);
 		if (user) {
 			req.session.userId = user._id;
-			res.sendStatus(204);
+			res.json(user);
 		} else {
 			res.sendStatus(401);
 		}

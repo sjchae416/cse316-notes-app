@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { getUserAPIMethod, loginUserAPIMethod } from '../api/client';
 
-function LoginPage({ setUser }) {
+function LoginPage({ setUser, setIsLogInPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 
@@ -17,11 +17,18 @@ function LoginPage({ setUser }) {
 		setLoginPassword(loginPassword);
 	};
 
+	const toSignUp = () => {
+		setIsLogInPage(false);
+	};
+
 	const login = async () => {
 		try {
-			await loginUserAPIMethod({ email: loginEmail, password: loginPassword });
-			const user = await getUserAPIMethod();
-			console.log('user', user);
+			const user = await loginUserAPIMethod({
+				email: loginEmail,
+				password: loginPassword,
+			});
+
+			console.log('user: ', user);
 			setUser(user);
 		} catch (e) {
 			console.log(e);
@@ -43,7 +50,7 @@ function LoginPage({ setUser }) {
 					<label>Password</label>
 					<input
 						id="login-input-password"
-						type="type"
+						type="password"
 						onChange={onChangePassword}
 					/>
 				</div>
@@ -53,7 +60,9 @@ function LoginPage({ setUser }) {
 					</button>
 				</div>
 				<div className="btn-create-container">
-					<button id="btn-create">Create New Account</button>
+					<button onClick={toSignUp} id="btn-create">
+						Create New Account
+					</button>
 				</div>
 			</div>
 		</div>

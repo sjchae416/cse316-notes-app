@@ -54,18 +54,9 @@ export const deleteNoteAPIMethod = (noteId) => {
 		.then(parseJSON);
 };
 
-// get all user
-export const getUserAPIMethod = () => {
-	return fetch(`/api/users`, {
-		...defaultHeaders,
-	})
-		.then(checkStatus)
-		.then(parseJSON);
-};
-
 // get a user bu id
-export const getUserByIdAPIMethod = (userId) => {
-	return fetch(`/api/users/${userId}`, {
+export const getUserByIdAPIMethod = () => {
+	return fetch(`/api/users/loggedInUser`, {
 		...defaultHeaders,
 	})
 		.then(checkStatus)
@@ -98,7 +89,9 @@ export const loginUserAPIMethod = (user) => {
 		...defaultHeaders,
 		method: 'POST',
 		body: JSON.stringify(user),
-	}).then(checkStatus);
+	})
+		.then(checkStatus)
+		.then(parseJSON);
 };
 
 export const logoutUserAPIMethod = (user) => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { registerUserAPIMethod } from '../api/client';
 
-function SignUpPage() {
+function SignUpPage({ setUser }) {
 	// user,
 	// setSignup,
 	// handleRegister,
@@ -37,8 +37,7 @@ function SignUpPage() {
 				email: signupEmail,
 				password: signupPassword,
 			});
-			console.log(newUser);
-			//TODO setProfile 해주고, profile 유무에 따라 로그인화면인지 아닌지 보여주기
+			setUser(newUser);
 		} catch (e) {
 			console.log('signupfailed');
 			console.error(e);
