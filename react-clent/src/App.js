@@ -6,11 +6,9 @@ import { getUserByIdAPIMethod } from './api/client';
 
 const App = () => {
 	const [profile, setProfile] = useState();
-  const [isLogInPage, setIsLoginPage] = useState(true);
-  
-  useEffect(() => {
+	const [isLogInPage, setIsLoginPage] = useState(true);
 
-  }, []);
+	useEffect(() => {}, []);
 
 	useEffect(() => {
 		const autoLogin = async () => {
@@ -37,7 +35,7 @@ const App = () => {
 			) : isLogInPage ? (
 				<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
 			) : (
-				<SignUpPage setUser={setProfile} />
+				<SignUpPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
 			)}
 		</>
 	);

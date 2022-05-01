@@ -442,3 +442,8 @@ input[type='submit'] {
 	/* width: fit-content; */
 	font-size: 24px;
 }
+
+#error-msg {
+	display: none;
+	color: red;
+}

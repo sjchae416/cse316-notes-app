@@ -4,15 +4,19 @@ import { loginUserAPIMethod } from '../api/client';
 function LoginPage({ setUser, setIsLoginPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
+	const loginErrorMsg = document.getElementById('error-msg');
 
 	// console.log('LOGIN PAGE');
 
 	const onChangeEmail = (event) => {
+		loginErrorMsg.style.display = 'none';
 		let loginEmail = event.target.value;
 		setLoginEmail(loginEmail);
 	};
 
 	const onChangePassword = (event) => {
+		loginErrorMsg.style.display = 'none';
+
 		let loginPassword = event.target.value;
 		setLoginPassword(loginPassword);
 	};
@@ -27,6 +31,7 @@ function LoginPage({ setUser, setIsLoginPage }) {
 			setUser(user);
 		} catch (e) {
 			console.log(e);
+			document.getElementById('error-msg').style.display = 'block';
 		}
 	};
 

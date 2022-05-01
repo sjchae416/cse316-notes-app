@@ -61,15 +61,21 @@ const ProfilePage = ({
 			// Now we want to make sure this is updated on the server – either the
 			// user needs to click the submit button, or we could trigger the server call here
 			const cloudInput = document.getElementById('cloudinary');
-			console.log('Uploaded cloud', cloudInput.value);
+			// console.log('Uploaded cloud', cloudInput.value);
 			cloudInput.value = null;
-			console.log('Uploaded cloud after clean', cloudInput.value);
+			// console.log('Uploaded cloud after clean', cloudInput.value);
 		}
 	};
 
 	const handleClickImageInput = (e) => {
 		e.preventDefault();
 		document.getElementById('cloudinary').click();
+	};
+
+	const handleRemoveImage = (e) => {
+		e.preventDefault();
+		const updatedUser = { ...profile, profileImageUrl: '' };
+		setProfile(updatedUser);
 	};
 
 	return (
@@ -93,7 +99,7 @@ const ProfilePage = ({
 						className="profile-picture"
 						id="profile-profile"
 						src={
-							profile?.profileImageUrl ??
+							profile?.profileImageUrl ||
 							`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`
 						}
 					/>
@@ -110,13 +116,15 @@ const ProfilePage = ({
 					/>
 					<button
 						ref={imageUploadButtonRef}
-						id="image-upload-button"
+						id="btn-add-image"
 						onClick={handleClickImageInput}
 					>
 						Add Image
 					</button>
 				</div>
-				<button className="input-image">Remove Image</button>
+				<button id="btn-remove-image" onClick={handleRemoveImage}>
+					Remove Image
+				</button>
 			</div>
 
 			<div className="profile-info">

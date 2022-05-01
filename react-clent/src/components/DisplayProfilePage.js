@@ -9,7 +9,7 @@ function DisplayProfilePage({ openModal, profile }) {
 			<img
 				className="profile-picture"
 				src={
-					profile?.profileImageUrl ??
+					profile?.profileImageUrl ||
 					`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`
 				}
 			/>
