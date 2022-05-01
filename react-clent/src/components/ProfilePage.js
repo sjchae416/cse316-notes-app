@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
 import {
 	logoutUserAPIMethod,
+	updateUserAPIMethod,
 	uploadImageToCloudinaryAPIMethod,
 } from '../api/client';
 
@@ -15,6 +17,7 @@ const ProfilePage = ({
 	profile,
 	setProfile,
 	setIsLoginPage,
+	imageUploadButtonRef,
 }) => {
 	const handleLogout = async () => {
 		console.log('user logged out');
@@ -26,7 +29,12 @@ const ProfilePage = ({
 		setIsLoginPage(true);
 	};
 
-	const handleImageSelected = (event) => {
+	useEffect(() => {
+		console.log('what the profile', profile);
+	}, [profile]);
+
+	const handleImageSelected = async (event) => {
+		event.preventDefault();
 		console.log('New File Selected');
 		if (event.target.files && event.target.files[0]) {
 			// Could also do additional error checking on the file type, if we wanted
@@ -42,18 +50,26 @@ const ProfilePage = ({
 			formData.append('upload_preset', unsignedUploadPreset);
 
 			console.log('Cloudinary upload');
-			uploadImageToCloudinaryAPIMethod(formData).then((response) => {
-				console.log('Upload success');
-				console.dir(response);
+			const imageResponse = await uploadImageToCloudinaryAPIMethod(formData);
+			console.log('Upload success');
+			console.dir(imageResponse);
 
-				// Now the URL gets saved to the author
-				const updatedUser = { ...profile, profileImageUrl: response.url };
-				setProfile(updatedUser);
+			// Now the URL gets saved to the author
+			const updatedUser = { ...profile, profileImageUrl: imageResponse.url };
+			setProfile(updatedUser);
 
-				// Now we want to make sure this is updated on the server – either the
-				// user needs to click the submit button, or we could trigger the server call here
-			});
+			// Now we want to make sure this is updated on the server – either the
+			// user needs to click the submit button, or we could trigger the server call here
+			const cloudInput = document.getElementById('cloudinary');
+			console.log('Uploaded cloud', cloudInput.value);
+			cloudInput.value = null;
+			console.log('Uploaded cloud after clean', cloudInput.value);
 		}
+	};
+
+	const handleClickImageInput = (e) => {
+		e.preventDefault();
+		document.getElementById('cloudinary').click();
 	};
 
 	return (
@@ -76,7 +92,10 @@ const ProfilePage = ({
 					<img
 						className="profile-picture"
 						id="profile-profile"
-						src={`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`}
+						src={
+							profile?.profileImageUrl ??
+							`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`
+						}
 					/>
 				</div>
 
@@ -87,7 +106,15 @@ const ProfilePage = ({
 						accept="image/*"
 						id="cloudinary"
 						onChange={handleImageSelected}
+						style={{ display: 'none' }}
 					/>
+					<button
+						ref={imageUploadButtonRef}
+						id="image-upload-button"
+						onClick={handleClickImageInput}
+					>
+						Add Image
+					</button>
 				</div>
 				<button className="input-image">Remove Image</button>
 			</div>

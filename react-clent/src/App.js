@@ -6,7 +6,11 @@ import { getUserByIdAPIMethod } from './api/client';
 
 const App = () => {
 	const [profile, setProfile] = useState();
-	const [isLogInPage, setIsLoginPage] = useState(true);
+  const [isLogInPage, setIsLoginPage] = useState(true);
+  
+  useEffect(() => {
+
+  }, []);
 
 	useEffect(() => {
 		const autoLogin = async () => {

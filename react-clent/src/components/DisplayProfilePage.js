@@ -1,4 +1,4 @@
-function DisplayProfilePage({ openModal }) {
+function DisplayProfilePage({ openModal, profile }) {
 	return (
 		<button
 			className="button-profile"
@@ -8,7 +8,10 @@ function DisplayProfilePage({ openModal }) {
 		>
 			<img
 				className="profile-picture"
-				src={`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`}
+				src={
+					profile?.profileImageUrl ??
+					`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`
+				}
 			/>
 		</button>
 	);

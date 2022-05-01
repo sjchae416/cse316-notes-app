@@ -29,13 +29,14 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 	const profileCloseButtonRef = useRef(null);
 	const searchBarInputRef = useRef(null);
 	const saveButtonRef = useRef(null);
+	const imageUploadButtonRef = useRef(null);
 	const [isNarrowScreen, setIsNarrowScreen] = useState(
 		() => window.innerWidth <= 500
 	);
 	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
 		useState(false);
 
-	console.log('HOME PAGE');
+	// console.log('HOME PAGE');
 
 	// fetching Notes Data
 	useEffect(() => {
@@ -284,6 +285,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 	const handleSaveClick = async (e) => {
 		e.preventDefault();
 		console.log(profile);
+
 		await updateUserAPIMethod(profile);
 		closeProfileModal();
 	};
@@ -304,6 +306,9 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 				return;
 			}
 			if (e.target === saveButtonRef.current) {
+				return;
+			}
+			if (e.target === imageUploadButtonRef.current) {
 				return;
 			}
 			target = target.parentElement;
@@ -334,6 +339,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 						notes={notes}
 						handleAddNote={addNote}
 						openProfileModal={openProfileModal}
+						profile={profile}
 					/>
 					<SidebarContent
 						notes={notes}
@@ -398,6 +404,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 						profile={profile}
 						setProfile={setProfile}
 						setIsLoginPage={setIsLoginPage}
+						imageUploadButtonRef={imageUploadButtonRef}
 					/>
 				)}
 			</div>

@@ -69,7 +69,7 @@ export const getUserByIdAPIMethod = () => {
 
 // SECTION update a user
 export const updateUserAPIMethod = (user) => {
-	return fetch(`/api/users/${user._id}`, {
+	return fetch(`/api/users`, {
 		...defaultHeaders,
 		method: 'PUT',
 		body: JSON.stringify(user),
@@ -101,11 +101,10 @@ export const loginUserAPIMethod = (user) => {
 };
 
 // SECTION logout user
-export const logoutUserAPIMethod = (user) => {
+export const logoutUserAPIMethod = () => {
 	return fetch('/api/logout', {
 		...defaultHeaders,
 		method: 'POST',
-		body: JSON.stringify(user),
 	}).then(checkStatus);
 };
 

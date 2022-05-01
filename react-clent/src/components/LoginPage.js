@@ -5,7 +5,7 @@ function LoginPage({ setUser, setIsLoginPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
 
-	console.log('LOGIN PAGE');
+	// console.log('LOGIN PAGE');
 
 	const onChangeEmail = (event) => {
 		let loginEmail = event.target.value;

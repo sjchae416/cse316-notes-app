@@ -137,8 +137,8 @@ app.get('/api/users/loggedInUser', async function (req, res) {
 });
 
 // SECTION update a user
-app.put('/api/users/:id', async function (req, res) {
-	const id = req.params.id;
+app.put('/api/users', async function (req, res) {
+	const id = req.session.userId;
 	console.log(req.body);
 	User.findByIdAndUpdate(
 		id,
@@ -146,6 +146,7 @@ app.put('/api/users/:id', async function (req, res) {
 			name: req.body.name,
 			email: req.body.email,
 			colorScheme: req.body.colorScheme,
+			profileImageUrl: req.body.profileImageUrl,
 		},
 		function (err, result) {
 			if (err) {
@@ -231,20 +232,22 @@ app.post(
 	})
 );
 
+// const upload = multer({dest: 'uploads/'})
+
+// // SECTION upload single image
+// app.post(
+// 	'/api/users/:id/file',
+// 	upload.single('image'),
+// 	wrapAsync(async function (req, res) {
+// 		// You can see the file details here – it also gets automatically saved into the uploads folder
+// 		// Again, this is an example of how this works but you would do something a little different in production.
+// 		console.log('File uploaded of length: ' + req.file.size);
+// 		console.dir(req.file);
+// 		res.json('File uploaded successfully');
+// 	})
+// );
+
 port = process.env.PORT || 5000;
 app.listen(port, () => {
 	console.log('server started!');
 });
-
-// SECTION upload single image
-api.post(
-	'/api/users/:id/file',
-	upload.single('image'),
-	wrapAsync(async function (req, res) {
-		// You can see the file details here – it also gets automatically saved into the uploads folder
-		// Again, this is an example of how this works but you would do something a little different in production.
-		console.log('File uploaded of length: ' + req.file.size);
-		console.dir(req.file);
-		res.json('File uploaded successfully');
-	})
-);
