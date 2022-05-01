@@ -23,6 +23,36 @@ const ProfilePage = ({
 		setIsLoginPage(true);
 	};
 
+	const handleImageSelected = (event) => {
+		console.log('New File Selected');
+		if (event.target.files && event.target.files[0]) {
+			// Could also do additional error checking on the file type, if we wanted
+			// to only allow certain types of files.
+			const selectedFile = event.target.files[0];
+			console.dir(selectedFile);
+
+			const formData = new FormData();
+			// TODO: You need to create an "unsigned" upload preset on your Cloudinary account
+			// Then enter the text for that here.
+			const unsignedUploadPreset = 'wbsf92da';
+			formData.append('file', selectedFile);
+			formData.append('upload_preset', unsignedUploadPreset);
+
+			console.log('Cloudinary upload');
+			uploadImageToCloudinaryAPIMethod(formData).then((response) => {
+				console.log('Upload success');
+				console.dir(response);
+
+				// Now the URL gets saved to the author
+				const updatedUser = { ...profile, profileImageUrl: response.url };
+				setProfile(updatedUser);
+
+				// Now we want to make sure this is updated on the server – either the
+				// user needs to click the submit button, or we could trigger the server call here
+			});
+		}
+	};
+
 	return (
 		<form className="profile-form">
 			<div className="profile-nav">
@@ -46,12 +76,17 @@ const ProfilePage = ({
 						src={`${process.env.PUBLIC_URL}/assets/images/keyboard.jpg`}
 					/>
 				</div>
-				<button className="button-add" type="button">
-					Add New Image
-				</button>
-				<button className="button-remove" type="button">
-					Remove Image
-				</button>
+
+				<div className="input-image">
+					<input
+						type="file"
+						name="image"
+						accept="image/*"
+						id="cloudinary"
+						onChange={handleImageSelected}
+					/>
+				</div>
+				<button className="input-image">Remove Image</button>
 			</div>
 
 			<div className="profile-info">

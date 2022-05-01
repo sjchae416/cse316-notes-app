@@ -235,3 +235,16 @@ port = process.env.PORT || 5000;
 app.listen(port, () => {
 	console.log('server started!');
 });
+
+// SECTION upload single image
+api.post(
+	'/api/users/:id/file',
+	upload.single('image'),
+	wrapAsync(async function (req, res) {
+		// You can see the file details here – it also gets automatically saved into the uploads folder
+		// Again, this is an example of how this works but you would do something a little different in production.
+		console.log('File uploaded of length: ' + req.file.size);
+		console.dir(req.file);
+		res.json('File uploaded successfully');
+	})
+);

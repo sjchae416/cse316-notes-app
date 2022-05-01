@@ -109,6 +109,32 @@ export const logoutUserAPIMethod = (user) => {
 	}).then(checkStatus);
 };
 
+// // SECTION
+// export const uploadFileForAuthorAPIMethod = (userId, formData) => {
+//   return fetch(`/api/users/${userId}/file`, {
+//       // We do NOT want to set the default headers – the formData will automatically set the
+//       // headers to tell the server of the data type (which is different than the JSON
+//       // standard all the other API calls have been sending
+//       method: 'POST',
+//       body: formData,
+//   }).then(checkStatus)
+//       .then(parseJSON);
+// }
+
+// SECTION upload an image to Cloudinary
+export const uploadImageToCloudinaryAPIMethod = (formData) => {
+	const cloudName = 'sjchae-cloud'; // TODO: Write in your own Cloudinary account
+	return fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
+		// We do NOT want to set the default headers – the formData will automatically set the
+		// headers to tell the server of the data type (which is different than the JSON
+		// standard all the other API calls have been sending
+		method: 'POST',
+		body: formData,
+	})
+		.then(checkStatus)
+		.then(parseJSON);
+};
+
 function checkStatus(response) {
 	if (response.status >= 200 && response.status < 300) {
 		return response;
