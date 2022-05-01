@@ -1,4 +1,7 @@
-import { logoutUserAPIMethod } from '../api/client';
+import {
+	logoutUserAPIMethod,
+	uploadImageToCloudinaryAPIMethod,
+} from '../api/client';
 
 const ProfilePage = ({
 	handleProfileName,
