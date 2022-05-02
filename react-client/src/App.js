@@ -26,26 +26,32 @@ const App = () => {
 	}, []);
 	return (
 		<>
-			{profile ? (
-				<Home
-					profile={profile}
-					setProfile={setProfile}
-					setIsLoginPage={setIsLoginPage}
-				/>
-			) : isLogInPage ? (
-				<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
-			) : (
-				<SignUpPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
-			)}
+			{
+				profile ? (
+					<Home
+						profile={profile}
+						setProfile={setProfile}
+						setIsLoginPage={setIsLoginPage}
+					/>
+				) : isLogInPage ? (
+					<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
+				) : null
+				// NOTE delete null and uncomment bottom lines to restore
+				//   (
+				// <SignUpPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
+				// )
+			}
 		</>
 	);
 };
 
 export default App;
 
-// ANCHOR about tags
-// NOTE
-// TODO
-// SECTION
-// FIXME
-// REVIEW
+// ANCHOR - Used to indicate a section in your file
+// TODO - An item that is awaiting completion
+// FIXME - An item that requires a bugfix
+// STUB - Used for generated default snippets
+// NOTE - An important note for a specific code section
+// REVIEW - An item that requires additional review
+// SECTION - Used to define a region (See 'Hierarchical anchors')
+// LINK - Used to link to a file that can be opened within the editor (See 'Link Anchors')

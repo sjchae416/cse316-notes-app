@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { signUpUserAPIMethod } from '../api/client';
 
-function SignUpPage({ setUser, setIsLoginPage }) {
+function SignUpPage({ setUser, setIsLoginPage, show, onClose }) {
 	const [signUpName, setSignUpName] = useState('');
 	const [signUpEmail, setSignUpEmail] = useState('');
 	const [signUpPassword, setSignUpPassword] = useState('');
@@ -51,33 +51,43 @@ function SignUpPage({ setUser, setIsLoginPage }) {
 		}
 	};
 
+	if (!show) {
+		return null;
+	}
+
 	return (
-		<div id="wrapper-signup">
-			<div id="signup-header">
-				<h1 id="signup-title">Sign Up</h1>
-				<button id="btn-signup-close" onClick={closeSignUpPage}>
-					X
-				</button>
-			</div>
-			<div id="signup-input">
-				<label>Name</label>
-				<input id="signup-input-name" type="text" onChange={onChangeName} />
-				<label>Email</label>
-				<input id="signup-input-email" type="text" onChange={onChangeEmail} />
-				<label>Password</label>
-				<input
-					id="signup-input-password"
-					type="text"
-					onChange={onChangePassword}
-				/>
-			</div>
-			<div id="error-msg" >
-				Error: Invalid email and/or password
-			</div>
-			<div id="btn-sign-up-container">
-				<button id="btn-sign-up" onClick={handleSignUp}>
-					Sign Up
-				</button>
+		// NOTE delete div#sign-up-modal to restore
+		<div id="sign-up-modal" onClick={onClose}>
+			<div id="wrapper-sign-up" onClick={(e) => e.stopPropagation()}>
+				<div id="sign-up-header">
+					<h1 id="sign-up-title">Sign Up</h1>
+					{/* <button id="btn-sign-up-close" onClick={closeSignUpPage}> */}
+					<button id="btn-sign-up-close" onClick={onClose}>
+						X
+					</button>
+				</div>
+				<div id="sign-up-input">
+					<label>Name</label>
+					<input id="sign-up-input-name" type="text" onChange={onChangeName} />
+					<label>Email</label>
+					<input
+						id="sign-up-input-email"
+						type="text"
+						onChange={onChangeEmail}
+					/>
+					<label>Password</label>
+					<input
+						id="sign-up-input-password"
+						type="text"
+						onChange={onChangePassword}
+					/>
+				</div>
+				<div id="error-msg">Error: Invalid email and/or password</div>
+				<div id="btn-sign-up-container">
+					<button id="btn-sign-up" onClick={handleSignUp}>
+						Sign Up
+					</button>
+				</div>
 			</div>
 		</div>
 	);
