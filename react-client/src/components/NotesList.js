@@ -8,6 +8,7 @@ const NotesList = ({
 	noteContentRef,
 	setIsSidebarWhenNarrowScreen,
 	searchedNotes,
+	similarNotes,
 }) => {
 	return (
 		<div className="notes-list">
@@ -24,6 +25,9 @@ const NotesList = ({
 							noteContentRef={noteContentRef}
 							setIsSidebarWhenNarrowScreen={setIsSidebarWhenNarrowScreen}
 							isSelected={idx === selectedNoteIndex}
+							isSimilarNote={
+								similarNotes[idx] ? similarNotes[idx].score > 0.5 : false
+							}
 						/>
 					);
 				})}

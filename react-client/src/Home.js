@@ -12,6 +12,8 @@ import {
 	updateUserAPIMethod,
 } from './api/client';
 import useDebounce from './hooks/useDebounce';
+import { determineRelatednessOfSentences } from './universalSentenceEncoder';
+import { getIdToIndex } from './utils';
 
 function Home({ profile, setProfile, setIsLoginPage }) {
 	const [notes, setNotes] = useState([]);
@@ -36,11 +38,11 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 	const [isSidebarWhenNarrowScreen, setIsSidebarWhenNarrowScreen] =
 		useState(false);
 
-	// console.log('HOME PAGE');
+	const [similarNotes, setSimilarNotes] = useState([]);
+	const [wasCreatedRecord, setWasCreatedRecord] = useState(0);
+	const [wasDeletedTrack, setWasDeletedTrack] = useState(0);
 
-	// fetching Notes Data
 	useEffect(() => {
-		// same as componentDidMount
 		const fetchData = async () => {
 			if (profile) {
 				const data = await getNotesAPIMethod();
@@ -56,7 +58,6 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		fetchData();
 	}, [profile]);
 
-	// resizing windows
 	useEffect(() => {
 		const onResize = () => {
 			if (window.innerWidth <= 500) {
@@ -70,9 +71,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		window.addEventListener('resize', onResize);
 		return () => window.removeEventListener('resize', onResize);
 	}, []);
-	// same as componentDidMount
 
-	// changing text contents
 	useEffect(() => {
 		if (selectedNoteIndex !== -1) {
 			setNoteTextValue(notes[selectedNoteIndex]);
@@ -100,11 +99,42 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		}
 	}, [wasEdited]);
 
-	// useEffect(() => {
+	useEffect(() => {
+		const fetchSimilarNotes = async () => {
+			if (!isUpdating && selectedNoteId !== -1) {
+				const notesText = notes.map((note) => note.text);
+				const comparedIndex = getIdToIndex(notes, selectedNoteId);
+				console.log('compared', comparedIndex);
+				const result = await determineRelatednessOfSentences(
+					notesText,
+					comparedIndex === -1 ? 0 : comparedIndex
+				);
+				setSimilarNotes(result);
+				console.log(result);
+			}
+		};
+		fetchSimilarNotes();
+		if (isUpdating) {
+			setSimilarNotes([]);
+		}
+	}, [selectedNoteId, isUpdating]);
 
-	// 	await updateNoteAPIMethod(editedNote);
-	// 	const fetchedNotes = await getNotesAPIMethod();
-	// },[notes])
+	useEffect(() => {
+		const fetchSimilarNotes = async () => {
+			if (wasCreatedRecord || wasDeletedTrack) {
+				const notesText = notes.map((note) => note.text);
+				const comparedIndex = getIdToIndex(notes, selectedNoteId);
+				console.log('compared', comparedIndex);
+				const result = await determineRelatednessOfSentences(
+					notesText,
+					comparedIndex === -1 ? 0 : comparedIndex
+				);
+				setSimilarNotes(result);
+				console.log(result);
+			}
+		};
+		fetchSimilarNotes();
+	}, [wasCreatedRecord, wasDeletedTrack]);
 
 	useEffect(() => {
 		if (searchInput === '') {
@@ -113,19 +143,19 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 			const searched = [...notes].filter((obj) => {
 				return obj.text.includes(searchInput);
 			});
-			console.log(
-				'🚀 ~ file: App.js ~ line 124 ~ useEffect ~ searchInput',
-				searchInput
-			);
+
 			setSearchedNotes(searched);
 		}
 	}, [searchInput]);
 
 	useEffect(() => {
 		setSelectedNoteId(notes[selectedNoteIndex]?._id || -1);
+		console.log(
+			'selectedNoteId after selected: ',
+			notes[selectedNoteIndex]?._id
+		);
 	}, [selectedNoteIndex]);
 
-	// create new note
 	const addNote = async () => {
 		setSearchInput('');
 		if (searchBarInputRef?.current) {
@@ -149,6 +179,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 				};
 			})
 		);
+		setWasCreatedRecord((prevRecord) => prevRecord + 1);
 		setSelectedNoteIndex(0);
 		if (selectedNoteIndex !== -1) {
 			setTimeout(() => {
@@ -157,7 +188,6 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		}
 	};
 
-	// update a note
 	const updateNote = (text) => {
 		const lastUpdatedDate = new Date();
 		const editedNotes = [...notes];
@@ -173,7 +203,6 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		setIsUpdating(true);
 	};
 
-	// delete a note
 	const deleteNote = async () => {
 		const id = notes[selectedNoteIndex]._id;
 		await deleteNoteAPIMethod(id);
@@ -200,18 +229,8 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 				};
 			})
 		);
+		setWasDeletedTrack((prevRecord) => prevRecord + 1);
 	};
-
-	// search notes
-	// const searchNotes = (text) => {
-	// 	setSearchInput(text);
-	// 	console.log('🚀 ~ file: App.js ~ line 162 ~ searchNotes ~ text', text);
-	// 	const searchedNotes = [...notes].filter((obj) =>
-	// 		Object.values(obj).some((val) => val.includes(text))
-	// 	);
-	// 	console.log(notes);
-	// 	setNotes(searchedNotes);
-	// };
 
 	const searchNotes = (text) => {
 		setSearchInput(text);
@@ -320,14 +339,6 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 		setIsProfileModalOpen(true);
 	};
 
-	// const handleRegister = async () => {
-	// 	await signUpUserAPIMethod({
-	// 		name: userName,
-	// 		email: userEmail,
-	// 		password: userPassword,
-	// 	});
-	// };
-
 	return (
 		<div className="container" onClick={judgeIsProfileContainer}>
 			{((isNarrowScreen && isSidebarWhenNarrowScreen) || !isNarrowScreen) && (
@@ -350,6 +361,7 @@ function Home({ profile, setProfile, setIsLoginPage }) {
 						searchedNotes={searchedNotes}
 						searchBarInputRef={searchBarInputRef}
 						selectedNoteIndex={selectedNoteIndex}
+						similarNotes={similarNotes}
 					/>
 				</div>
 			)}

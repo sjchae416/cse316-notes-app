@@ -5,6 +5,7 @@
 	--light-background-color: #f4f4f4;
 	--nav-bar-color: #ffffff;
 	--selected-color: rgb(229, 241, 253);
+	--selected-similar-color: rgb(147, 164, 180);
 	--action-text-color: #ffffff;
 	--action-color: rgb(58, 99, 197);
 	--border-color: darkgray;
@@ -434,7 +435,7 @@ input[type='submit'] {
 	left: 50%;
 	top: 50%;
 	transform: translate(-50%, -50%);
-	width: 70%;
+	width: 50%;
 	height: 70%;
 }
 
@@ -625,4 +626,12 @@ h2 {
 		border-radius: 0px;
 		/* background-color: red; */
 	}
+}
+
+.similar-note {
+	background-color: var(--selected-similar-color);
+}
+
+.selected-note {
+	background-color: var(--selected-color);
 }

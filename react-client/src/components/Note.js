@@ -7,6 +7,7 @@ const Note = ({
 	setIsSidebarWhenNarrowScreen,
 	noteContentRef,
 	isSelected,
+	isSimilarNote,
 }) => {
 	const handleNoteClick = () => {
 		setIsSidebarWhenNarrowScreen(false);
@@ -19,13 +20,13 @@ const Note = ({
 	return (
 		<div
 			onClick={handleNoteClick}
-			className="note"
-			style={{
-				backgroundColor: isSelected ? 'rgb(229, 241, 253)' : 'inherit',
-			}}
+			className={`${isSelected ? 'selected-note' : ''} ${
+				isSimilarNote ? 'similar-note' : ''
+			} note`}
 		>
 			<div className="preview">{text || 'New Note'}</div>
 			<div className="date">{convertDateToString(lastUpdatedDate)}</div>
+			{isSimilarNote && !isSelected && 'similar'}
 		</div>
 	);
 };

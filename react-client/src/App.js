@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import Home from './Home';
 import LoginPage from './components/LoginPage';
-import SignUpPage from './components/SignUpPage';
 import { getUserByIdAPIMethod } from './api/client';
+import { loadModel } from './universalSentenceEncoder';
+
+loadModel();
 
 const App = () => {
 	const [profile, setProfile] = useState();
@@ -24,23 +26,18 @@ const App = () => {
 		};
 		autoLogin();
 	}, []);
+
 	return (
 		<>
-			{
-				profile ? (
-					<Home
-						profile={profile}
-						setProfile={setProfile}
-						setIsLoginPage={setIsLoginPage}
-					/>
-				) : isLogInPage ? (
-					<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
-				) : null
-				// NOTE delete null and uncomment bottom lines to restore
-				//   (
-				// <SignUpPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
-				// )
-			}
+			{profile ? (
+				<Home
+					profile={profile}
+					setProfile={setProfile}
+					setIsLoginPage={setIsLoginPage}
+				/>
+			) : isLogInPage ? (
+				<LoginPage setUser={setProfile} setIsLoginPage={setIsLoginPage} />
+			) : null}
 		</>
 	);
 };

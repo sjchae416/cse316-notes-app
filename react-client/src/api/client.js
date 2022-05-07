@@ -4,8 +4,7 @@ const defaultHeaders = {
 	},
 };
 
-// SECTION get all notes
-// get all notes
+// ANCHOR get all notes
 export const getNotesAPIMethod = () => {
 	return fetch(`/api/notes`, {
 		...defaultHeaders,
@@ -14,8 +13,7 @@ export const getNotesAPIMethod = () => {
 		.then(parseJSON);
 };
 
-// SECTION create new note
-// create new note
+// ANCHOR create new note
 export const createNoteAPIMethod = (note) => {
 	return fetch('/api/notes', {
 		...defaultHeaders,
@@ -26,16 +24,7 @@ export const createNoteAPIMethod = (note) => {
 		.then(parseJSON);
 };
 
-// export const getNoteByIdAPIMethod = (noteId) => {
-// 	return fetch(`/api/notes/${noteId}`, {
-// 		...defaultHeaders,
-// 	})
-// 		.then(checkStatus)
-// 		.then(parseJSON);
-// };
-
-// SECTION update a note
-// update a note
+// ANCHOR update a note
 export const updateNoteAPIMethod = (note) => {
 	return fetch(`/api/notes/${note._id}`, {
 		...defaultHeaders,
@@ -46,8 +35,7 @@ export const updateNoteAPIMethod = (note) => {
 		.then();
 };
 
-// SECTION delete a note
-// delete a note
+// ANCHOR delete a note
 export const deleteNoteAPIMethod = (noteId) => {
 	return fetch(`/api/notes/${noteId}`, {
 		...defaultHeaders,
@@ -57,8 +45,7 @@ export const deleteNoteAPIMethod = (noteId) => {
 		.then(parseJSON);
 };
 
-// SECTION get a user
-// get a user bu id
+// ANCHOR get a user
 export const getUserByIdAPIMethod = () => {
 	return fetch(`/api/users/loggedInUser`, {
 		...defaultHeaders,
@@ -67,7 +54,7 @@ export const getUserByIdAPIMethod = () => {
 		.then(parseJSON);
 };
 
-// SECTION update a user
+// ANCHOR update a user
 export const updateUserAPIMethod = (user) => {
 	return fetch(`/api/users`, {
 		...defaultHeaders,
@@ -78,7 +65,7 @@ export const updateUserAPIMethod = (user) => {
 		.then();
 };
 
-// SECTION signup user
+// ANCHOR signup user
 export const signUpUserAPIMethod = (user) => {
 	return fetch('/api/signup', {
 		...defaultHeaders,
@@ -89,7 +76,7 @@ export const signUpUserAPIMethod = (user) => {
 		.then(parseJSON);
 };
 
-// SECTION login user
+// ANCHOR login user
 export const loginUserAPIMethod = (user) => {
 	return fetch('/api/login', {
 		...defaultHeaders,
@@ -100,7 +87,7 @@ export const loginUserAPIMethod = (user) => {
 		.then(parseJSON);
 };
 
-// SECTION logout user
+// ANCHOR logout user
 export const logoutUserAPIMethod = () => {
 	return fetch('/api/logout', {
 		...defaultHeaders,
@@ -108,25 +95,10 @@ export const logoutUserAPIMethod = () => {
 	}).then(checkStatus);
 };
 
-// // SECTION
-// export const uploadFileForAuthorAPIMethod = (userId, formData) => {
-//   return fetch(`/api/users/${userId}/file`, {
-//       // We do NOT want to set the default headers – the formData will automatically set the
-//       // headers to tell the server of the data type (which is different than the JSON
-//       // standard all the other API calls have been sending
-//       method: 'POST',
-//       body: formData,
-//   }).then(checkStatus)
-//       .then(parseJSON);
-// }
-
-// SECTION upload an image to Cloudinary
+// ANCHOR upload an image to Cloudinary
 export const uploadImageToCloudinaryAPIMethod = (formData) => {
-	const cloudName = 'sjchae-cloud'; // TODO: Write in your own Cloudinary account
+	const cloudName = 'sjchae-cloud';
 	return fetch(`https://api.cloudinary.com/v1_1/${cloudName}/upload`, {
-		// We do NOT want to set the default headers – the formData will automatically set the
-		// headers to tell the server of the data type (which is different than the JSON
-		// standard all the other API calls have been sending
 		method: 'POST',
 		body: formData,
 	})
