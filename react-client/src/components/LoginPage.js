@@ -5,21 +5,21 @@ import SignUpPage from './SignUpPage';
 function LoginPage({ setUser, setIsLoginPage }) {
 	const [loginEmail, setLoginEmail] = useState('');
 	const [loginPassword, setLoginPassword] = useState('');
-	const loginErrorMsg = document.getElementById('error-msg');
+	const loginErrorMsg = document.getElementById('login-error-msg');
 	const [show, setShow] = useState(false);
 
 	// console.log('LOGIN PAGE');
 
 	const onChangeEmail = (event) => {
 		// loginErrorMsg.style.display = 'none';
-		document.getElementById('error-msg').style.display = 'none';
+		document.getElementById('login-error-msg').style.display = 'none';
 		let loginEmail = event.target.value;
 		setLoginEmail(loginEmail);
 	};
 
 	const onChangePassword = (event) => {
 		// loginErrorMsg.style.display = 'none';
-		document.getElementById('error-msg').style.display = 'none';
+		document.getElementById('login-error-msg').style.display = 'none';
 
 		let loginPassword = event.target.value;
 		setLoginPassword(loginPassword);
@@ -35,7 +35,7 @@ function LoginPage({ setUser, setIsLoginPage }) {
 			setUser(user);
 		} catch (e) {
 			console.log(e);
-			document.getElementById('error-msg').style.display = 'block';
+			document.getElementById('login-error-msg').style.display = 'block';
 		}
 	};
 
@@ -66,14 +66,13 @@ function LoginPage({ setUser, setIsLoginPage }) {
 							onChange={onChangePassword}
 						/>
 					</div>
-					<div id="error-msg">Error: Invalid email and/or password</div>
-					<div className="login-btn">
+					<div id="login-error-msg">Error: Invalid email and/or password</div>
+					<div id="login-btn">
 						<button id="btn-login" onClick={login}>
-							Log in
+							Log In
 						</button>
 						<hr />
-						{/* <button id="btn-sign-up" onClick={displaySignUpPage}> */}
-						<button id="btn-sign-up" onClick={() => setShow(true)}>
+						<button id="btn-create" onClick={() => setShow(true)}>
 							Create New Account
 						</button>
 					</div>

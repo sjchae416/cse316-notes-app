@@ -5,7 +5,7 @@ function SignUpPage({ setUser, setIsLoginPage, show, onClose }) {
 	const [signUpName, setSignUpName] = useState('');
 	const [signUpEmail, setSignUpEmail] = useState('');
 	const [signUpPassword, setSignUpPassword] = useState('');
-	const signUpErrorMsg = document.getElementById('error-msg');
+	const signUpErrorMsg = document.getElementById('sign-up-error-msg');
 
 	// console.log('SIGN UP PAGE');
 	// NOTE 1 character before an @ symbol, followed by domain name
@@ -47,7 +47,7 @@ function SignUpPage({ setUser, setIsLoginPage, show, onClose }) {
 		} catch (e) {
 			console.log('signupfailed');
 			console.error(e);
-			document.getElementById('error-msg').style.display = 'block';
+			document.getElementById('sign-up-error-msg').style.display = 'block';
 		}
 	};
 
@@ -61,7 +61,6 @@ function SignUpPage({ setUser, setIsLoginPage, show, onClose }) {
 			<div id="wrapper-sign-up" onClick={(e) => e.stopPropagation()}>
 				<div id="sign-up-header">
 					<h1 id="sign-up-title">Sign Up</h1>
-					{/* <button id="btn-sign-up-close" onClick={closeSignUpPage}> */}
 					<button id="btn-sign-up-close" onClick={onClose}>
 						X
 					</button>
@@ -82,7 +81,7 @@ function SignUpPage({ setUser, setIsLoginPage, show, onClose }) {
 						onChange={onChangePassword}
 					/>
 				</div>
-				<div id="error-msg">Error: Invalid email and/or password</div>
+				<div id="sign-up-error-msg">Error: Invalid email and/or password</div>
 				<div id="btn-sign-up-container">
 					<button id="btn-sign-up" onClick={handleSignUp}>
 						Sign Up
